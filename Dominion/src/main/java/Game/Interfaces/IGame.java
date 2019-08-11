@@ -1,4 +1,10 @@
 package Game.Interfaces;
 
-public interface IGame {
+import java.io.Serializable;
+
+public interface IGame extends Serializable {
+
+    int getNumPlayers();
+
+
 }

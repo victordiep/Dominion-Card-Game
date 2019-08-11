@@ -1,33 +1,54 @@
 package Card.Effect;
 
-import Card.Interfaces.IEffect;
+import Card.Ability.Ability;
+import Card.Effect.Interfaces.IEffect;
+import Constants.EffectType;
+import Game.Game;
+import Game.Target.Interfaces.ITargetPointer;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class Effect implements IEffect {
+public abstract class Effect implements IEffect {
 
     protected UUID id;
-    //protected EffectType effectType;
+    protected EffectType effectType;
     //protected TargetPointer targetPointer = FirstTargetPointer.getInstance();
     protected String staticText = "";
     protected Map<String, Object> values;
     protected String concatPrefix = ""; // combines multiple effects in text rule
 
     public Effect(final Effect effect) {
-        this.id = effect.id;
-        this.staticText = effect.staticText;
-        //this.effectType = effect.effectType;
-        //this.targetPointer = effect.targetPointer.copy();
-        this.concatPrefix = effect.concatPrefix;
-        if (effect.values != null) {
-            values = new HashMap<>();
-            Map<String, Object> map = effect.values;
-            for (Map.Entry<String, Object> entry : map.entrySet()) {
-                values.put(entry.getKey(), entry.getValue());
-            }
-        }
+
     }
 
+    @Override
+    public UUID getId() {
+        return null;
+    }
+
+    @Override
+    public void newId() {
+
+    }
+
+    @Override
+    public boolean apply(Game game, Ability source) {
+        return false;
+    }
+
+    @Override
+    public EffectType getEffectType() {
+        return null;
+    }
+
+    @Override
+    public IEffect setTargetPointer(ITargetPointer targetPointer) {
+        return null;
+    }
+
+    @Override
+    public ITargetPointer getTargetPointer() {
+        return null;
+    }
 }

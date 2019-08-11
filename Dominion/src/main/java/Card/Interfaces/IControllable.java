@@ -3,7 +3,7 @@ package Card.Interfaces;
 import java.util.UUID;
 
 /*
- * Used for classes the objects created from said classes are under control by a given player
+ *
  */
 
 public interface IControllable {

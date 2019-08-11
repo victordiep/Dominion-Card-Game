@@ -1,4 +1,4 @@
-package Card.Interfaces;
+package Card.Ability.Interfaces;
 
 import Card.Ability.Ability;
 
