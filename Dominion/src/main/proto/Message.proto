@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package protobuf;
+
+option java_outer_classname = "PacketProtos";
+
+message Packet {
+    // UUID of client/server sending the message
+    // Server username is SERVER
+    string UUID = 1;
+
+    // A command enum that determines how this message will be parsed
+    enum Type {
+        CONNECTION = 0;
+        LOBBY = 1;
+        START_GAME = 2;
+        PLAY_CARD =3;
+        BUY_CARD = 4;
+        GAIN_CARD = 5;
+        DRAW_CARD = 6;
+        END_TURN = 7;
+        END_GAME = 8;
+    }
+
+    Type type = 2;
+
+    // Message contents
+    repeated string message = 3;
+
+    // Additional info used for some Packet types
+    repeated string addon = 4;
+}

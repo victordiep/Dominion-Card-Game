@@ -27,8 +27,8 @@
         <maven-assembly-plugin.version>3.1.1</maven-assembly-plugin.version>
         <maven-surefire-plugin.version>2.12.4</maven-surefire-plugin.version>
 
-        <protobuf.outputDirectory>src/main/java</protobuf.outputDirectory>
         <protobuf.inputDirectories>src/main/proto</protobuf.inputDirectories>
+        <protobuf.outputDirectory>src/main/java</protobuf.outputDirectory>
     </properties>
 
     <dependencies>
