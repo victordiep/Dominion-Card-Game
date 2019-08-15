@@ -1,5 +1,6 @@
 package Client;
 
+import Client.GUI.GuiManager;
 import Server.ConnectionConfig;
 import protobuf.PacketProtos.Packet;
 
@@ -13,13 +14,15 @@ import java.util.*;
 
 /*
  * - Client holds the GuiManager and has a thread that listens to it
- * - GuiManager keeps track of interactions made with the GUI and stores it in a data collection for the client
+ * - GuiManager keeps track of interactions made with the Client.GUI and stores it in a data collection for the client
  *   to send details of the interaction to the server
  * - The server then sends the interaction made to all other clients who will then perform the action on their local
  *   representation of the game
  */
 
 public class Client implements Runnable {
+
+    private GuiManager guiManager;
 
     private final UUID playerId;
     private final String username;
