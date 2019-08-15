@@ -3,7 +3,7 @@ package Server;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import static Constants.LaunchDefaults.ServerSettings.*;
+import static Constant.LaunchDefaults.ServerSettings.*;
 
 /*
  * Contains the details of the configurations used to establish a connection between the client and server

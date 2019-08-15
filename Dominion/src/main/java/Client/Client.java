@@ -57,7 +57,7 @@ public class Client implements Runnable {
         this.inGame = false;
         this.inGameLock = new Object();
 
-        this.playerList = Collections.synchronizedMap(new HashMap<UUID, String>());
+        this.playerList = Collections.synchronizedMap(new HashMap<>());
     }
 
     public UUID getPlayerId() { return playerId; }

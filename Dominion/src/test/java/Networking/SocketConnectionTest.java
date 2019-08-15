@@ -78,6 +78,47 @@ public class SocketConnectionTest {
     }
 
     @Test(timeout=10000)
+    public void checkIfServerBroadcastWorksForTwoClients() throws IOException, ClassNotFoundException {
+        ConnectionConfig clientConfig2 = new ConnectionConfig();
+        clientConfig.setHostName("localhost");
+        clientConfig.setHostPort(4444);
+        clientConfig.setLocalPort(4446);
+        clientConfig.setUsername("CLIENT2");
+
+        Client client2 = new Client(clientConfig2);
+        client2.connect();
+
+        assertEquals(2, client.getPlayerListSize());
+        assertEquals("CLIENT", client.getPlayers().get(0));
+        assertEquals("CLIENT2", client.getPlayers().get(1));
+
+        assertEquals(2, client2.getPlayerListSize());
+        assertEquals("CLIENT", client2.getPlayers().get(0));
+        assertEquals("CLIENT2", client2.getPlayers().get(1));
+
+        Packet message = Packet.newBuilder()
+                .setUUID("SERVER")
+                .setType(Packet.Type.TEST)
+                .addMessage("potato")
+                .addAddon("tomato")
+                .build();
+
+        server.broadcast(message);
+        Packet recvMessage = client.read();
+        Packet recvMessage2 = client2.read();
+
+        assertEquals("SERVER", recvMessage.getUUID());
+        assertEquals(Packet.Type.TEST, recvMessage.getType());
+        assertEquals("potato", recvMessage.getMessage(0));
+        assertEquals("tomato", recvMessage.getAddon(0));
+
+        assertEquals("SERVER", recvMessage2.getUUID());
+        assertEquals(Packet.Type.TEST, recvMessage2.getType());
+        assertEquals("potato", recvMessage2.getMessage(0));
+        assertEquals("tomato", recvMessage2.getAddon(0));
+    }
+
+    @Test(timeout=10000)
     public void checkIfClientSendWorks() throws IOException, InterruptedException {
         Packet message = Packet.newBuilder()
                 .setUUID(client.getPlayerId().toString())
