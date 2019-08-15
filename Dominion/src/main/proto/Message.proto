@@ -20,6 +20,7 @@ message Packet {
         DRAW_CARD = 6;
         END_TURN = 7;
         END_GAME = 8;
+        TEST = 9;
     }
 
     Type type = 2;

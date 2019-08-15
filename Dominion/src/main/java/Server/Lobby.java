@@ -29,15 +29,7 @@ public class Lobby {
         return maxNumOfPlayers;
     }
 
-    public synchronized List<ConnectionDetails> getConnectionDetails() {
-        List<ConnectionDetails> players = new ArrayList<>();
-
-        for (ConnectionDetails connectionDetails : Collections.synchronizedCollection(clients.values())) {
-            players.add(connectionDetails);
-        }
-
-        return players;
-    }
+    public synchronized List<ConnectionDetails> getConnectionDetails() { return new ArrayList<>(clients.values()); }
 
     public synchronized Map<UUID, ConnectionDetails> getClients() { return clients; }
 
@@ -50,14 +42,12 @@ public class Lobby {
     }
 
     public synchronized ConnectionDetails removeClient(UUID playerId) {
-        synchronized(clients){
-            UUID clientToRemove = clients.get(playerId).getPlayerId();
+        UUID clientToRemove = clients.get(playerId).getPlayerId();
 
-            if(playerId == clientToRemove)
-                return clients.remove(playerId);
-            else
-                return null;
-        }
+        if(playerId == clientToRemove)
+            return clients.remove(playerId);
+        else
+            return null;
     }
 
     public void queuePacketToProcess(Packet message){

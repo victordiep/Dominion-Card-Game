@@ -2,6 +2,7 @@ package Server;
 
 import protobuf.PacketProtos.Packet;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -31,8 +32,8 @@ public class ServerListener implements Runnable {
         this.isRunning = false;
 
         //setting up readers and writers
-        this.in = new ObjectInputStream(client.getInputStream());
         this.out = new ObjectOutputStream(client.getOutputStream());
+        this.in = new ObjectInputStream(client.getInputStream());
 
         if(lobby.getNumPlayersConnected() >= lobby.getMaxNumOfPlayers()){
             in.close();
@@ -46,12 +47,15 @@ public class ServerListener implements Runnable {
     public void run() {
         try {
             readPlayerDetails();
+
             lobby.addClient(clientDetails);
+
             isRunning = true;
 
             while (isRunning) {
                 try {
                     Packet message = (Packet) in.readObject();
+
                     lobby.queuePacketToProcess(message);
                 }
                 catch (ClassNotFoundException e) {
@@ -60,12 +64,16 @@ public class ServerListener implements Runnable {
                 }
             }
         }
+        catch (EOFException exc)
+        {
+            // end of stream
+        }
         catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void readPlayerDetails() {
+    private synchronized void readPlayerDetails() {
         try {
             Packet message = (Packet) in.readObject();
 

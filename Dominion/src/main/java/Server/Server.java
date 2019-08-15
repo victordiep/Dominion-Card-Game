@@ -5,16 +5,11 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import protobuf.PacketProtos.Packet;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-
-
 public class Server implements Runnable {
-    private static final Logger logger = LogManager.getLogger(Server.class);
 
     private final int port; //the port that the clients will connect to
     private final ServerSocket server;
@@ -92,20 +87,25 @@ public class Server implements Runnable {
 
     // Handles incoming connections from clients
     private void accept(){
-        while((lobby.getNumPlayersConnected() < numPlayersToStart) && checkIfRunning()){
-            try {
+        setIfRunning(true);
 
+        while(lobby.getNumPlayersConnected() < numPlayersToStart){
+            try {
                 if(lobby.getNumPlayersConnected() < numPlayersToStart){
-                    //
                     Socket client = server.accept();
 
                     // Set up a listener so that the server listens to incoming client messages
-                    new ServerListener(lobby, client).run();
+                    Thread thread = new Thread(new ServerListener(lobby, client));
+                    thread.start();
+
+                    TimeUnit.SECONDS.sleep(1);
 
                     broadcastPlayerList();
                 }
             } catch (IOException e) {
 
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
 
@@ -113,16 +113,14 @@ public class Server implements Runnable {
     }
 
     private void broadcastPlayerList() throws IllegalArgumentException, IOException{
-        StringBuilder waiting = new StringBuilder(""); //all of the players that are currently connected
-
         Packet.Builder buildPlayerList = Packet.newBuilder()
                                         .setUUID("SERVER")
                                         .setType(Packet.Type.LOBBY);
-
+        
         // Retrieve player UUID and names and add them to the Packet
         for(ConnectionDetails connectionDetails : lobby.getConnectionDetails()) {
             buildPlayerList.addMessage(connectionDetails.getUsername());
-            buildPlayerList.addAddon(connectionDetails.getPlayerId().toString());
+            buildPlayerList.addAddon(connectionDetails.getPlayerId().toString());;
         }
 
         Packet playerList = buildPlayerList.build();
@@ -138,7 +136,7 @@ public class Server implements Runnable {
                 ServerListener listener = clientDetails.getListener();
 
                 try{
-                    clientDetails.getListener().send(message);
+                    listener.send(message);
                 } catch(IOException e){
 
                 }
@@ -146,9 +144,12 @@ public class Server implements Runnable {
         }
     }
 
-    public void queuePacket(Packet message){
+    public synchronized void queuePacket(Packet message){
         packetQueue.add(message);
-        packetQueue.notifyAll();
+    }
+
+    public synchronized Packet readPacket(){
+        return packetQueue.remove(0);
     }
 
     public boolean checkIfRunning(){
@@ -157,7 +158,7 @@ public class Server implements Runnable {
         }
     }
 
-    public void setIfServerRunning(boolean isRunning){
+    public void setIfRunning(boolean isRunning){
         synchronized(isRunningLock){
             this.isRunning = isRunning;
         }
@@ -190,7 +191,7 @@ public class Server implements Runnable {
     public void kill(){
         if(checkIfRunning()){
 
-            setIfServerRunning(false);
+            setIfRunning(false);
             setIfInLobby(false);
             setIfInGame(false);
 

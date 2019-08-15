@@ -273,6 +273,10 @@ public final class PacketProtos {
        * <code>END_GAME = 8;</code>
        */
       END_GAME(8),
+      /**
+       * <code>TEST = 9;</code>
+       */
+      TEST(9),
       UNRECOGNIZED(-1),
       ;
 
@@ -312,6 +316,10 @@ public final class PacketProtos {
        * <code>END_GAME = 8;</code>
        */
       public static final int END_GAME_VALUE = 8;
+      /**
+       * <code>TEST = 9;</code>
+       */
+      public static final int TEST_VALUE = 9;
 
 
       public final int getNumber() {
@@ -341,6 +349,7 @@ public final class PacketProtos {
           case 6: return DRAW_CARD;
           case 7: return END_TURN;
           case 8: return END_GAME;
+          case 9: return TEST;
           default: return null;
         }
       }
@@ -1400,14 +1409,14 @@ public final class PacketProtos {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\rMessage.proto\022\010protobuf\"\346\001\n\006Packet\022\014\n\004" +
+      "\n\rMessage.proto\022\010protobuf\"\360\001\n\006Packet\022\014\n\004" +
       "UUID\030\001 \001(\t\022#\n\004type\030\002 \001(\0162\025.protobuf.Pack" +
       "et.Type\022\017\n\007message\030\003 \003(\t\022\r\n\005addon\030\004 \003(\t\"" +
-      "\210\001\n\004Type\022\016\n\nCONNECTION\020\000\022\t\n\005LOBBY\020\001\022\016\n\nS" +
+      "\222\001\n\004Type\022\016\n\nCONNECTION\020\000\022\t\n\005LOBBY\020\001\022\016\n\nS" +
       "TART_GAME\020\002\022\r\n\tPLAY_CARD\020\003\022\014\n\010BUY_CARD\020\004" +
       "\022\r\n\tGAIN_CARD\020\005\022\r\n\tDRAW_CARD\020\006\022\014\n\010END_TU" +
-      "RN\020\007\022\014\n\010END_GAME\020\010B\016B\014PacketProtosb\006prot" +
-      "o3"
+      "RN\020\007\022\014\n\010END_GAME\020\010\022\010\n\004TEST\020\tB\016B\014PacketPr" +
+      "otosb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
