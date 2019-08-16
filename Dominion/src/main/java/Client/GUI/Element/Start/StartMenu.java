@@ -1,7 +1,10 @@
 package Client.GUI.Element.Start;
 
+import Client.EventHandler.Connection.StartMenuEventHandlers;
 import Client.GUI.Element.Form.StartMenuButton;
 import Client.GUI.Element.Misc.TranslucentRectangle;
+import static Constant.GuiSettings.StartScreen.*;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -15,10 +18,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-import static Constant.GuiSettings.StartScreen.*;
-import static Constant.GuiSettings.StartScreen.START_RECT_Y;
-
 public class StartMenu extends BorderPane {
+
+    StartMenuEventHandlers startMenuEventHandlers;
 
     private Group startMenu;
     private Group hostMenu;
@@ -27,7 +29,9 @@ public class StartMenu extends BorderPane {
     private final double x;
     private final double y;
 
-    public StartMenu(double x, double y) {
+    public StartMenu(double x, double y, StartMenuEventHandlers startMenuEventHandlers) {
+        this.startMenuEventHandlers = startMenuEventHandlers;
+
         this.x = x;
         this.y = y;
 
@@ -119,6 +123,11 @@ public class StartMenu extends BorderPane {
         TextField txtName = new TextField();
         txtName.setPromptText("HostMan123");
         txtName.setFocusTraversable(false);
+
+        txtName.textProperty().addListener((observable, oldName, newName) ->
+            startMenuEventHandlers.getConnectionConfig().setUsername(newName)
+        );
+
         grid.add(txtName, 1, 2);
 
         Label lblPort = new Label("Port");
@@ -128,6 +137,11 @@ public class StartMenu extends BorderPane {
         TextField txtPort = new TextField();
         txtPort.setPromptText("1234");
         txtPort.setFocusTraversable(false);
+
+        txtPort.textProperty().addListener((observable, oldPort, newPort) ->
+            startMenuEventHandlers.getConnectionConfig().setHostPort(Integer.parseInt(newPort))
+        );
+
         grid.add(txtPort, 1, 3);
 
         HBox buttons = new HBox();
@@ -135,12 +149,7 @@ public class StartMenu extends BorderPane {
 
         Button btnHost = new Button("Host Game");
         btnHost.setFocusTraversable(false);
-
-        btnHost.setOnMousePressed( e -> {
-            if (!txtName.getText().trim().isEmpty() && !txtPort.getText().trim().isEmpty()) {
-                // TODO: Implement the switch
-            }
-        });
+        btnHost.setOnAction(startMenuEventHandlers.getHostGameEvent());
 
         Button btnBack = new Button("Go Back");
         btnBack.setMinWidth(80);
@@ -193,6 +202,11 @@ public class StartMenu extends BorderPane {
         TextField txtName = new TextField();
         txtName.setPromptText("DominionGuy321");
         txtName.setFocusTraversable(false);
+
+        txtName.textProperty().addListener((observable, oldName, newName) -> {
+            startMenuEventHandlers.getConnectionConfig().setUsername(newName);
+        });
+
         grid.add(txtName, 1, 2);
 
         Label lblAddress = new Label("IP Address");
@@ -202,6 +216,11 @@ public class StartMenu extends BorderPane {
         TextField txtAddress = new TextField();
         txtAddress.setPromptText("127.0.0.1");
         txtAddress.setFocusTraversable(false);
+
+        txtAddress.textProperty().addListener((observable, oldAddress, newAddress) ->
+            startMenuEventHandlers.getConnectionConfig().setHostName(newAddress)
+        );
+
         grid.add(txtAddress, 1, 3);
 
         Label lblPort = new Label("Port");
@@ -211,6 +230,11 @@ public class StartMenu extends BorderPane {
         TextField txtPort = new TextField();
         txtPort.setPromptText("1234");
         txtPort.setFocusTraversable(false);
+
+        txtPort.textProperty().addListener((observable, oldPort, newPort) ->
+            startMenuEventHandlers.getConnectionConfig().setHostPort(Integer.parseInt(newPort))
+        );
+
         grid.add(txtPort, 1, 4);
 
         HBox buttons = new HBox();
@@ -218,14 +242,7 @@ public class StartMenu extends BorderPane {
 
         Button btnJoin = new Button("Join Game");
         btnJoin.setFocusTraversable(false);
-
-        btnJoin.setOnMousePressed( e -> {
-            if (!txtName.getText().trim().isEmpty()
-                    && !txtAddress.getText().trim().isEmpty()
-                    && !txtPort.getText().trim().isEmpty()) {
-                System.out.println("hello");
-            }
-        });
+        btnJoin.setOnAction(startMenuEventHandlers.getJoinGameEvent());
 
         Button btnBack = new Button("Go Back");
         btnBack.setMinWidth(80);

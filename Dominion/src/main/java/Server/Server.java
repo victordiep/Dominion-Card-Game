@@ -11,22 +11,26 @@ import protobuf.PacketProtos.Packet;
 
 public class Server implements Runnable {
 
-    private final int port; //the port that the clients will connect to
-    private final ServerSocket server;
+    private int port; //the port that the clients will connect to
+    private ServerSocket server;
 
-    private final Lobby lobby;
-    private final int numPlayersToStart;
+    private Lobby lobby;
+    private int numPlayersToStart;
 
     private boolean isRunning; // Keeps track of whether the server is running
-    private final Object isRunningLock;
+    private Object isRunningLock;
     private boolean inLobby; // Keeps track of whether the server is in lobby waiting for connections
-    private final Object inLobbyLock;
+    private Object inLobbyLock;
     private boolean inGame; // Keeps track of whether the game has started
-    private final Object inGameLock;
+    private Object inGameLock;
 
-    private final List<Packet> packetQueue;
+    private List<Packet> packetQueue;
 
-    public Server(ConnectionConfig config) throws IOException {
+    public Server() {
+
+    }
+
+    public void initialize(ConnectionConfig config) throws IOException {
         int port = config.getHostPort();
 
         // Checking if the host port provided is valid
@@ -93,7 +97,7 @@ public class Server implements Runnable {
             try {
                 if(lobby.getNumPlayersConnected() < numPlayersToStart){
                     Socket client = server.accept();
-
+                    System.out.println("Connected");
                     // Set up a listener so that the server listens to incoming client messages
                     Thread thread = new Thread(new ServerListener(lobby, client));
                     thread.start();
@@ -116,7 +120,7 @@ public class Server implements Runnable {
         Packet.Builder buildPlayerList = Packet.newBuilder()
                                         .setUUID("SERVER")
                                         .setType(Packet.Type.LOBBY);
-        
+
         // Retrieve player UUID and names and add them to the Packet
         for(ConnectionDetails connectionDetails : lobby.getConnectionDetails()) {
             buildPlayerList.addMessage(connectionDetails.getUsername());

@@ -14,13 +14,13 @@ public class ConnectionConfig {
     private int localPort; // Client's port
     private int hostPort; // Server's port
 
-    private InetAddress hostname; // Server's hostname (IP address)
+    private String hostname; // Server's hostname (IP address)
     private String username; // Username used for the game
 
-    public ConnectionConfig() throws UnknownHostException {
+    public ConnectionConfig() {
         this.localPort = DEFAULT_PORT;
         this.hostPort = DEFAULT_PORT;
-        this.hostname = InetAddress.getByName(DEFAULT_HOSTNAME);
+        this.hostname = DEFAULT_HOSTNAME;
         setUsername(DEFAULT_USERNAME);
     }
 
@@ -37,7 +37,7 @@ public class ConnectionConfig {
     public void setHostPort(int hostPort) { this.hostPort = hostPort; }
 
     // Server's hostname
-    public InetAddress getHostName() { return hostname; }
-    public void setHostName(String hostName) throws UnknownHostException { this.hostname = InetAddress.getByName(hostName); }
+    public InetAddress getHostName() throws UnknownHostException { return InetAddress.getByName(this.hostname); }
+    public void setHostName(String hostName) { this.hostname = hostName; }
 
 }

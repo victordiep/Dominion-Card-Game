@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.*;
 
 /*
@@ -24,26 +25,30 @@ public class Client implements Runnable {
 
     private GuiManager guiManager;
 
-    private final UUID playerId;
-    private final String username;
-    private final InetAddress hostName;
-    private final int localPort;
-    private final int hostPort;
+    private UUID playerId;
+    private String username;
+    private InetAddress hostName;
+    private int localPort;
+    private int hostPort;
 
     private Socket socket; // The client's socket
     private ObjectInputStream in; // Used to read messages coming from the client to the server
     private ObjectOutputStream out; // Used to send messages from the server to the client
 
     private boolean isRunning; // Keeps track of whether the server is running
-    private final Object isRunningLock;
+    private Object isRunningLock;
     private boolean inLobby; // Keeps track of whether the server is in lobby waiting for connections
-    private final Object inLobbyLock;
+    private Object inLobbyLock;
     private boolean inGame; // Keeps track of whether the game has started
-    private final Object inGameLock;
+    private Object inGameLock;
 
     private Map<UUID, String> playerList;
 
-    public Client(ConnectionConfig config) throws IOException {
+    public Client() {
+
+    }
+
+    public void initialize(ConnectionConfig config) throws UnknownHostException {
         this.playerId = UUID.randomUUID();
         this.username = config.getUsername();
         this.hostName = config.getHostName();

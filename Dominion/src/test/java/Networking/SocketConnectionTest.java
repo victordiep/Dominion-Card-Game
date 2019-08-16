@@ -12,7 +12,6 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-
 public class SocketConnectionTest {
     private Client client;
     private Server server;
@@ -34,8 +33,10 @@ public class SocketConnectionTest {
         serverConfig.setLocalPort(4444);
         serverConfig.setUsername("SERVER");
 
-        client = new Client(clientConfig);
-        server = new Server(serverConfig);
+        client = new Client();
+        client.initialize(clientConfig);
+        server = new Server();
+        server.initialize(serverConfig);
 
         Thread thread = new Thread(server);
         thread.start();
@@ -85,7 +86,8 @@ public class SocketConnectionTest {
         clientConfig.setLocalPort(4446);
         clientConfig.setUsername("CLIENT2");
 
-        Client client2 = new Client(clientConfig2);
+        Client client2 = new Client();
+        client2.initialize(clientConfig2);
         client2.connect();
 
         assertEquals(2, client.getPlayerListSize());
