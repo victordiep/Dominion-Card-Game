@@ -1,6 +1,6 @@
 package Client.GUI.Element.Start;
 
-import Client.EventHandler.Connection.StartMenuEventHandlers;
+import Client.EventHandler.EventHandlers;
 import Client.GUI.Element.Form.StartMenuButton;
 import Client.GUI.Element.Misc.TranslucentRectangle;
 import static Constant.GuiSettings.StartScreen.*;
@@ -20,7 +20,7 @@ import javafx.scene.text.Text;
 
 public class StartMenu extends BorderPane {
 
-    StartMenuEventHandlers startMenuEventHandlers;
+    EventHandlers startMenuEventHandlers;
 
     private Group startMenu;
     private Group hostMenu;
@@ -29,7 +29,7 @@ public class StartMenu extends BorderPane {
     private final double x;
     private final double y;
 
-    public StartMenu(double x, double y, StartMenuEventHandlers startMenuEventHandlers) {
+    public StartMenu(double x, double y, EventHandlers startMenuEventHandlers) {
         this.startMenuEventHandlers = startMenuEventHandlers;
 
         this.x = x;

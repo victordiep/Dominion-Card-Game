@@ -79,6 +79,7 @@ public class Server implements Runnable {
                 // Stop any new connections to be made to the server socket
                 server.close();
 
+                setIfInLobby(false);
                 setIfInGame(true);
                 /*
                  * TODO: Start game logic
@@ -96,6 +97,7 @@ public class Server implements Runnable {
         while(lobby.getNumPlayersConnected() < numPlayersToStart){
             try {
                 if(lobby.getNumPlayersConnected() < numPlayersToStart){
+                    setIfInLobby(true);
                     Socket client = server.accept();
                     System.out.println("Connected");
                     // Set up a listener so that the server listens to incoming client messages

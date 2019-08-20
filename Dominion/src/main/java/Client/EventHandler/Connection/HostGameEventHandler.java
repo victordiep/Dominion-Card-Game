@@ -1,7 +1,7 @@
 package Client.EventHandler.Connection;
 
 import Client.Client;
-import Client.GUI.GuiManager;
+import Client.DominionManager;
 import Client.GUI.Screen.Menus.CardSelectPane;
 import Server.Server;
 import Server.ConnectionConfig;
@@ -18,15 +18,15 @@ import java.util.concurrent.TimeUnit;
 
 public class HostGameEventHandler implements EventHandler<ActionEvent> {
 
-    private GuiManager guiManager;
+    private DominionManager dominionManager;
 
     private Client client;
     private Server server;
 
     private ConnectionConfig connectionConfig;
 
-    public HostGameEventHandler(GuiManager guiManager, Client client, Server server, ConnectionConfig connectionConfig) {
-        this.guiManager = guiManager;
+    public HostGameEventHandler(DominionManager dominionManager, Client client, Server server, ConnectionConfig connectionConfig) {
+        this.dominionManager = dominionManager;
         this.client = client;
         this.server = server;
         this.connectionConfig = connectionConfig;
@@ -60,7 +60,7 @@ public class HostGameEventHandler implements EventHandler<ActionEvent> {
         Thread clientThread = new Thread(this.client);
         clientThread.start();
 
-        guiManager.switchToScreen(new CardSelectPane());
+        dominionManager.switchToScreen(new CardSelectPane());
     }
 
 }

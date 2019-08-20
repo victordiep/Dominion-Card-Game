@@ -1,7 +1,6 @@
-package Client.GUI;
+package Client;
 
-import Client.Client;
-import Client.EventHandler.Connection.StartMenuEventHandlers;
+import Client.EventHandler.EventHandlers;
 import Client.GUI.Screen.Menus.StartPane;
 import Server.ConnectionConfig;
 import Server.Server;
@@ -16,17 +15,17 @@ import static Constant.GuiSettings.WindowDimensions.WINDOW_WIDTH;
 
 /*
  * The Client.GUI for the game is implemented using the State design pattern
- *  -> This GuiManager class is considered the "Context"
+ *  -> This DominionManager class is considered the "Context"
  *      -> switchToScreen() is used to switch between different states
  *  -> Classes under the Screen package are considered States (i.e. SceneState)
  */
 
-public class GuiManager extends Application {
+public class DominionManager extends Application {
 
     private ConnectionConfig connectionConfig;
 
-    private Client client;
-    private Server server;
+    private Client client = null;
+    private Server server = null;
 
     // Stores nodes to be displayed on the scene
     private Scene scene;
@@ -45,7 +44,7 @@ public class GuiManager extends Application {
         this.client = new Client();
         this.server = new Server();
 
-        this.scene = new Scene(new StartPane(new StartMenuEventHandlers(this, this.connectionConfig, this.client, this.server)));
+        this.scene = new Scene(new StartPane(new EventHandlers(this, this.connectionConfig, this.client, this.server)));
         primaryStage.setScene(scene);
 
         primaryStage.show();

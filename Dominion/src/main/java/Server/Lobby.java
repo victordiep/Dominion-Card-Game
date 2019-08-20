@@ -55,6 +55,12 @@ public class Lobby {
     }
 
     public void killAll() {
+        for(ConnectionDetails connection : Collections.synchronizedCollection(clients.values())){
+            connection.kill();
+        }
 
+        synchronized(clients){
+            clients.clear();
+        }
     }
 }

@@ -22,4 +22,7 @@ public class ConnectionDetails {
     public String getUsername() { return username; }
     public ServerListener getListener() { return listener; }
 
+    public void kill() {
+        listener.kill();
+    }
 }

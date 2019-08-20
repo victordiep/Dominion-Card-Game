@@ -1,6 +1,6 @@
 package Client.GUI.Screen.Menus;
 
-import Client.EventHandler.Connection.StartMenuEventHandlers;
+import Client.EventHandler.EventHandlers;
 import Client.GUI.Element.Background;
 import Client.GUI.Element.Logo;
 import Client.GUI.Element.Start.PlayerListMenu;
@@ -12,14 +12,14 @@ import javafx.scene.layout.Pane;
 
 /*
  * Contains forms to create a game or join a game
- *  -> Instantiates the client and/or server for GuiManager based on user input
+ *  -> Instantiates the client and/or server for DominionManager based on user input
  */
 
 public class StartPane extends Pane implements SceneState {
 
-    private StartMenuEventHandlers startMenuEventHandlers;
+    private EventHandlers startMenuEventHandlers;
 
-    public StartPane(StartMenuEventHandlers startMenuEventHandlers) {
+    public StartPane(EventHandlers startMenuEventHandlers) {
         this.startMenuEventHandlers = startMenuEventHandlers;
 
         setup();

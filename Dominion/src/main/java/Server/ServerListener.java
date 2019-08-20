@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.UUID;
 
 /*
@@ -59,6 +60,10 @@ public class ServerListener implements Runnable {
                     lobby.queuePacketToProcess(message);
                 }
                 catch (ClassNotFoundException e) {
+                    // Something that was not a packet was sent
+                    kill();
+                }
+                catch (SocketException e) {
                     // Something that was not a packet was sent
                     kill();
                 }

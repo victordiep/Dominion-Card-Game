@@ -1,4 +1,4 @@
-import Client.GUI.GuiManager;
+import Client.DominionManager;
 
 /*
  * Workaround to get Maven MainClass to work correctly
@@ -8,7 +8,7 @@ import Client.GUI.GuiManager;
 public class DominionLauncher {
 
     public static void main(String[] args) {
-        GuiManager.main(args);
+        DominionManager.main(args);
     }
 
 }
