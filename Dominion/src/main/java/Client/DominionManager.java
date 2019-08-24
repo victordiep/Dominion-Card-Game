@@ -2,16 +2,19 @@ package Client;
 ;
 import Client.GUI.Screen.Menus.CardSelectPane;
 import Client.GUI.Screen.Menus.StartPane;
+import Game.Game;
 import Server.ConnectionConfig;
 import Server.Server;
 
 import javafx.application.Application;
+import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static Constant.GuiSettings.WindowDimensions.WINDOW_HEIGHT;
@@ -29,6 +32,7 @@ import static Constant.GuiSettings.WindowDimensions.WINDOW_WIDTH;
 public class DominionManager extends Application {
 
     private static DominionManager instance = null;
+    private static Game game = null;
 
     private ConnectionConfig connectionConfig = null;
 
@@ -36,6 +40,8 @@ public class DominionManager extends Application {
     private Server server = null;
 
     private Scene scene;
+    // Keeps track of the previous screen
+    private Group previousScreen;
 
     public DominionManager(){
         super();
@@ -82,10 +88,17 @@ public class DominionManager extends Application {
     }
 
     public void switchToScreen(Parent content) {
+        previousScreen = new Group(this.scene.getRoot());
         this.scene.setRoot(content);
     }
 
-    public void hostGame() {
+    public void switchToPreviousScreen() {
+        Group tempScreen = new Group(this.scene.getRoot());
+        this.scene.setRoot(previousScreen);
+        previousScreen = tempScreen;
+    }
+
+    public void hostLobby() {
         try {
             this.server.initialize(connectionConfig);
             Thread serverThread = new Thread(this.server);
@@ -99,7 +112,7 @@ public class DominionManager extends Application {
                 }
             }
 
-            joinGame();
+            joinLobby();
 
             switchToScreen(new CardSelectPane());
         } catch (IOException e) {
@@ -107,7 +120,7 @@ public class DominionManager extends Application {
         }
     }
 
-    public void joinGame() {
+    public void joinLobby() {
         try {
             this.client.initialize(connectionConfig);
             Thread clientThread = new Thread(client);
@@ -116,6 +129,14 @@ public class DominionManager extends Application {
             e.printStackTrace();
         }
     }
+
+    public void createGame(List<String> kingdomCards) {
+        for (String name : kingdomCards) {
+            System.out.println(name);
+        }
+        System.out.println(kingdomCards.size());
+    }
+
 
     public void processEvent() {
         //client.process()

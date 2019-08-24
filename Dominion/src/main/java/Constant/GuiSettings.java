@@ -1,5 +1,8 @@
 package Constant;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static Constant.GuiSettings.WindowDimensions.*;
 
 public class GuiSettings {
@@ -29,5 +32,101 @@ public class GuiSettings {
         public static final double LOBBY_RECT_Y = LOGO_Y + LOGO_HEIGHT + 15;
     }
 
+    public static class CardSelectScreen {
+        public static final List<String> AVAILABLE_CARD_LIST = new ArrayList<>() {{
+            add("Artisan");
+            add("Bandit");
+            add("Bureaucrat");
+            add("Cellar");
+            add("Chapel");
+            add("CouncilRoom");
+            add("Festival");
+            add("Gardens");
+            add("Harbinger");
+            add("Laboratory");
+            add("Library");
+            add("Market");
+            add("Merchant");
+            add("Militia");
+            add("Mine");
+            add("Moat");
+            add("Moneylender");
+            add("Poacher");
+            add("Remodel");
+            add("Sentry");
+            add("Smithy");
+            add("ThroneRoom");
+            add("Vassal");
+            add("Village");
+            add("Witch");
+            add("Workshop");
+        }};
 
+        public static final List<String> PRESET_FIRST_GAME = new ArrayList<>() {{
+            add("Cellar");
+            add("Market");
+            add("Merchant");
+            add("Militia");
+            add("Mine");
+            add("Moat");
+            add("Remodel");
+            add("Smithy");
+            add("Village");
+            add("Workshop");
+        }};
+
+        public static final List<String> PRESET_SIZE_DISTORTION = new ArrayList<>() {{
+            add("Artisan");
+            add("Bandit");
+            add("Bureaucrat");
+            add("Chapel");
+            add("Festival");
+            add("Gardens");
+            add("Sentry");
+            add("ThroneRoom");
+            add("Witch");
+            add("Workshop");
+        }};
+
+        public static final List<String> PRESET_DECK_TOP = new ArrayList<>() {{
+            add("Artisan");
+            add("Bureaucrat");
+            add("CouncilRoom");
+            add("Festival");
+            add("Harbinger");
+            add("Laboratory");
+            add("Moneylender");
+            add("Sentry");
+            add("Vassal");
+            add("Village");
+        }};
+
+        public static final List<String> PRESET_IMPROVEMENTS = new ArrayList<>() {{
+            add("Artisan");
+            add("Cellar");
+            add("Market");
+            add("Merchant");
+            add("Mine");
+            add("Moat");
+            add("Moneylender");
+            add("Poacher");
+            add("Remodel");
+            add("Witch");
+        }};
+
+        public static final List<String> PRESET_SILVER_AND_GOLD = new ArrayList<>() {{
+            add("Bandit");
+            add("Bureaucrat");
+            add("Chapel");
+            add("Harbinger");
+            add("Laboratory");
+            add("Merchant");
+            add("Mine");
+            add("Moneylender");
+            add("ThroneRoom");
+            add("Vassal");
+        }};
+
+        public static final int CARDS_PER_ROW = 6;
+    }
 }

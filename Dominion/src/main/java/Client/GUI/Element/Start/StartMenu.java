@@ -58,7 +58,6 @@ public class StartMenu extends BorderPane {
     /*
      * START MENU
      */
-
     private void createStartMenu() {
         startMenu = new Group();
 
@@ -159,7 +158,7 @@ public class StartMenu extends BorderPane {
             txtPort.setDisable(true);
             btnBack.setDisable(true);
             btnHost.setDisable(true);
-            DominionManager.getInstance().hostGame();
+            DominionManager.getInstance().hostLobby();
         });
 
         buttons.getChildren().addAll(btnHost, btnBack);
@@ -259,7 +258,8 @@ public class StartMenu extends BorderPane {
             txtPort.setDisable(true);
             btnBack.setDisable(true);
             btnJoin.setDisable(true);
-            DominionManager.getInstance().joinGame();
+
+            DominionManager.getInstance().joinLobby();
         });
 
         buttons.getChildren().addAll(btnJoin, btnBack);

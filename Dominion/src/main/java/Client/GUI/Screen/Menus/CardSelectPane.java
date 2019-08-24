@@ -1,8 +1,10 @@
 package Client.GUI.Screen.Menus;
 
+import Client.DominionManager;
 import Client.GUI.Element.Background;
 import Client.GUI.Element.Card.CardArt;
 import Client.GUI.Screen.SceneState;
+import static Constant.GuiSettings.CardSelectScreen.*;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -28,8 +30,6 @@ public class CardSelectPane extends BorderPane implements SceneState {
 
     private Button btnSubmit;
 
-    private static final int cardsPerRow = 6;
-
     private List<String> selectedCardNames;
     private HashMap<String, CardArt> availableCards;
 
@@ -41,34 +41,6 @@ public class CardSelectPane extends BorderPane implements SceneState {
     public void setup() {
         getChildren().add(new Background());
 
-        List<String> cards = new ArrayList<>();
-        cards.add("Artisan");
-        cards.add("Bandit");
-        cards.add("Bureaucrat");
-        cards.add("Cellar");
-        cards.add("Chapel");
-        cards.add("CouncilRoom");
-        cards.add("Festival");
-        cards.add("Gardens");
-        cards.add("Harbinger");
-        cards.add("Laboratory");
-        cards.add("Library");
-        cards.add("Market");
-        cards.add("Merchant");
-        cards.add("Militia");
-        cards.add("Mine");
-        cards.add("Moat");
-        cards.add("Moneylender");
-        cards.add("Poacher");
-        cards.add("Remodel");
-        cards.add("Sentry");
-        cards.add("Smithy");
-        cards.add("ThroneRoom");
-        cards.add("Vassal");
-        cards.add("Village");
-        cards.add("Witch");
-        cards.add("Workshop");
-
         setPrefSize(1080, 562);
 
         ScrollPane cardDisplay = new ScrollPane();
@@ -79,7 +51,7 @@ public class CardSelectPane extends BorderPane implements SceneState {
         selectedCardNames = new ArrayList<>();
         availableCards = new HashMap<>();
 
-        setCardsToDisplay(cardDisplay, cards);
+        setCardsToDisplay(cardDisplay, AVAILABLE_CARD_LIST);
 
         options = new VBox();
         setOptions(options);
@@ -91,7 +63,7 @@ public class CardSelectPane extends BorderPane implements SceneState {
     private void setCardsToDisplay(ScrollPane cardDisplay, List<String> cards) {
         int cardIndex  = 0;
         int numOfCards = cards.size();
-        int numOfRows  = (int) Math.ceil((double)numOfCards / cardsPerRow);
+        int numOfRows  = (int) Math.ceil((double)numOfCards / CARDS_PER_ROW);
 
         VBox display = new VBox();
         display.setSpacing(10);
@@ -100,7 +72,7 @@ public class CardSelectPane extends BorderPane implements SceneState {
             HBox displayRow = new HBox();
             displayRow.setSpacing(10);
 
-            for (int col = 0; col < cardsPerRow && cardIndex < numOfCards; col++) {
+            for (int col = 0; col < CARDS_PER_ROW && cardIndex < numOfCards; col++) {
                 CardArt card = new CardArt(cards.get(cardIndex));
                 setMouseEffects(card);
 
@@ -195,53 +167,19 @@ public class CardSelectPane extends BorderPane implements SceneState {
         presetText.setFill(Color.WHITE);
         grid.add(presetText, 0, 0);
 
-        Button btnPresetFirstGame = new Button("First Game");
-        btnPresetFirstGame.setMinWidth(80);
-        btnPresetFirstGame.setFocusTraversable(false);
-        btnPresetFirstGame.setStyle("-fx-text-fill: black; -fx-background: black; -fx-background-color: darkgrey");
-        btnPresetFirstGame.setOnMousePressed( e -> {
-            setPresetFirstGame();
-        });
+        Button btnPresetFirstGame = createPresetButton("First Game", PRESET_FIRST_GAME);
         grid.add(btnPresetFirstGame, 0, 1);
 
-        Button btnPresetSizeDistortion = new Button("Size Distortion");
-        btnPresetSizeDistortion.setDisable(true);
-        btnPresetSizeDistortion.setMaxWidth(80);
-        btnPresetSizeDistortion.setFocusTraversable(false);
-        btnPresetSizeDistortion.setStyle("-fx-text-fill: black; -fx-background: black; -fx-background-color: darkgrey");
-        btnPresetSizeDistortion.setOnMousePressed( e -> {
-            setPresetSizeDistortion();
-        });
+        Button btnPresetSizeDistortion = createPresetButton("Size Distortion", PRESET_SIZE_DISTORTION);
         grid.add(btnPresetSizeDistortion, 1, 1);
 
-        Button btnPresetDeckTop = new Button("Deck Top");
-        btnPresetDeckTop.setDisable(true);
-        btnPresetDeckTop.setMinWidth(80);
-        btnPresetDeckTop.setFocusTraversable(false);
-        btnPresetDeckTop.setStyle("-fx-text-fill: black; -fx-background: black; -fx-background-color: darkgrey");
-        btnPresetDeckTop.setOnMousePressed( e -> {
-            setPresetDeckTop();
-        });
+        Button btnPresetDeckTop = createPresetButton("Deck Top", PRESET_DECK_TOP);
         grid.add(btnPresetDeckTop, 2, 1);
 
-        Button btnPresetImprovements = new Button("Improvements");
-        btnPresetImprovements.setDisable(true);
-        btnPresetImprovements.setMaxWidth(80);
-        btnPresetImprovements.setFocusTraversable(false);
-        btnPresetImprovements.setStyle("-fx-text-fill: black; -fx-background: black; -fx-background-color: darkgrey");
-        btnPresetImprovements.setOnMousePressed( e -> {
-            setPresetImprovements();
-        });
+        Button btnPresetImprovements = createPresetButton("Improvements", PRESET_IMPROVEMENTS);
         grid.add(btnPresetImprovements, 0, 2);
 
-        Button btnPresetSilverAndGold = new Button("Big Money");
-        btnPresetSilverAndGold.setDisable(true);
-        btnPresetSilverAndGold.setMinWidth(80);
-        btnPresetSilverAndGold.setFocusTraversable(false);
-        btnPresetSilverAndGold.setStyle("-fx-text-fill: black; -fx-background: black; -fx-background-color: darkgrey");
-        btnPresetSilverAndGold.setOnMousePressed( e -> {
-            setPresetSilverAndGold();
-        });
+        Button btnPresetSilverAndGold = createPresetButton("Big Money", PRESET_SILVER_AND_GOLD);
         grid.add(btnPresetSilverAndGold, 1, 2);
 
         Button btnReset = new Button("Reset");
@@ -268,86 +206,21 @@ public class CardSelectPane extends BorderPane implements SceneState {
         options.getChildren().addAll(enlargedCard, setupOptions);
     }
 
-    private void setPresetFirstGame() {
-        selectedCardNames.clear();
-        selectedCardNames.add(availableCards.get("Cellar").getName());
-        selectedCardNames.add(availableCards.get("Market").getName());
-        selectedCardNames.add(availableCards.get("Merchant").getName());
-        selectedCardNames.add(availableCards.get("Militia").getName());
-        selectedCardNames.add(availableCards.get("Mine").getName());
-        selectedCardNames.add(availableCards.get("Moat").getName());
-        selectedCardNames.add(availableCards.get("Remodel").getName());
-        selectedCardNames.add(availableCards.get("Smithy").getName());
-        selectedCardNames.add(availableCards.get("Village").getName());
-        selectedCardNames.add(availableCards.get("Workshop").getName());
-        setSelectOnCards();
+    private Button createPresetButton(String name, List<String> preset) {
+        Button btnPreset = new Button(name);
+        btnPreset.setMaxWidth(80);
+        btnPreset.setFocusTraversable(false);
+        btnPreset.setStyle("-fx-text-fill: black; -fx-background: black; -fx-background-color: darkgrey");
+        btnPreset.setOnMousePressed( e -> {
+            setPreset(preset);
+        });
 
-        btnSubmit.setDisable(false);
+        return btnPreset;
     }
 
-    private void setPresetSizeDistortion() {
+    private void setPreset(List<String> preset) {
         selectedCardNames.clear();
-        selectedCardNames.add(availableCards.get("Artisan").getName());
-        selectedCardNames.add(availableCards.get("Bandit").getName());
-        selectedCardNames.add(availableCards.get("Bureaucrat").getName());
-        selectedCardNames.add(availableCards.get("Chapel").getName());
-        selectedCardNames.add(availableCards.get("Festival").getName());
-        selectedCardNames.add(availableCards.get("Gardens").getName());
-        selectedCardNames.add(availableCards.get("Sentry").getName());
-        selectedCardNames.add(availableCards.get("Throne Room").getName());
-        selectedCardNames.add(availableCards.get("Witch").getName());
-        selectedCardNames.add(availableCards.get("Workshop").getName());
-        setSelectOnCards();
-
-        btnSubmit.setDisable(false);
-    }
-
-    private void setPresetDeckTop() {
-        selectedCardNames.clear();
-        selectedCardNames.add(availableCards.get("Artisan").getName());
-        selectedCardNames.add(availableCards.get("Bureaucrat").getName());
-        selectedCardNames.add(availableCards.get("Council Room").getName());
-        selectedCardNames.add(availableCards.get("Festival").getName());
-        selectedCardNames.add(availableCards.get("Harbinger").getName());
-        selectedCardNames.add(availableCards.get("Laboratory").getName());
-        selectedCardNames.add(availableCards.get("Moneylender").getName());
-        selectedCardNames.add(availableCards.get("Sentry").getName());
-        selectedCardNames.add(availableCards.get("Vassal").getName());
-        selectedCardNames.add(availableCards.get("Village").getName());
-        setSelectOnCards();
-
-        btnSubmit.setDisable(false);
-    }
-
-    private void setPresetImprovements() {
-        selectedCardNames.clear();
-        selectedCardNames.add(availableCards.get("Artisan").getName());
-        selectedCardNames.add(availableCards.get("Cellar").getName());
-        selectedCardNames.add(availableCards.get("Market").getName());
-        selectedCardNames.add(availableCards.get("Merchant").getName());
-        selectedCardNames.add(availableCards.get("Mine").getName());
-        selectedCardNames.add(availableCards.get("Moat").getName());
-        selectedCardNames.add(availableCards.get("Moneylender").getName());
-        selectedCardNames.add(availableCards.get("Poacher").getName());
-        selectedCardNames.add(availableCards.get("Remodel").getName());
-        selectedCardNames.add(availableCards.get("Witch").getName());
-        setSelectOnCards();
-
-        btnSubmit.setDisable(false);
-    }
-
-    private void setPresetSilverAndGold() {
-        selectedCardNames.clear();
-        selectedCardNames.add(availableCards.get("Bandit").getName());
-        selectedCardNames.add(availableCards.get("Bureaucrat").getName());
-        selectedCardNames.add(availableCards.get("Chapel").getName());
-        selectedCardNames.add(availableCards.get("Harbinger").getName());
-        selectedCardNames.add(availableCards.get("Laboratory").getName());
-        selectedCardNames.add(availableCards.get("Merchant").getName());
-        selectedCardNames.add(availableCards.get("Mine").getName());
-        selectedCardNames.add(availableCards.get("Moneylender").getName());
-        selectedCardNames.add(availableCards.get("Throne Room").getName());
-        selectedCardNames.add(availableCards.get("Vassal").getName());
+        selectedCardNames.addAll(preset);
         setSelectOnCards();
 
         btnSubmit.setDisable(false);
@@ -373,6 +246,7 @@ public class CardSelectPane extends BorderPane implements SceneState {
     }
 
     private void submitCards() {
-
+        DominionManager.getInstance().createGame(selectedCardNames);
+        DominionManager.getInstance().switchToPreviousScreen();
     }
 }
