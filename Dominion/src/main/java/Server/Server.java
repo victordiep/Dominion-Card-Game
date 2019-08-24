@@ -18,11 +18,11 @@ public class Server implements Runnable {
     private int numPlayersToStart;
 
     private boolean isRunning = false; // Keeps track of whether the server is running
-    private Object isRunningLock;
+    private final Object isRunningLock;
     private boolean inLobby = false; // Keeps track of whether the server is in lobby waiting for connections
-    private Object inLobbyLock;
+    private final Object inLobbyLock;
     private boolean inGame = false; // Keeps track of whether the game has started
-    private Object inGameLock;
+    private final Object inGameLock;
 
     private List<Packet> packetQueue;
 
@@ -30,6 +30,8 @@ public class Server implements Runnable {
         this.isRunningLock = new Object();
         this.inLobbyLock = new Object();
         this.inGameLock = new Object();
+
+        this.packetQueue = new ArrayList<>();
     }
 
     public void initialize(ConnectionConfig config) throws IOException {
@@ -45,8 +47,6 @@ public class Server implements Runnable {
         this.lobby = new Lobby(this, numPlayersToStart);
         this.server = new ServerSocket(this.port);
         this.server.setSoTimeout(5000);
-
-        this.packetQueue = new ArrayList<>();
     }
 
     public String getLocalIP(){
@@ -196,9 +196,8 @@ public class Server implements Runnable {
             setIfInLobby(false);
             setIfInGame(false);
 
-            lobby.killAll();
-
             try{
+                lobby.killAll();
                 server.close();
             } catch(IOException e){
                 // The server is already closed

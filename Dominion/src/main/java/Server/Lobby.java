@@ -17,7 +17,7 @@ public class Lobby {
 
     public Lobby(Server server, int maxLobbySize){
         this.server = server;
-        this.clients = Collections.synchronizedMap(new HashMap<UUID, ConnectionDetails>());
+        this.clients = Collections.synchronizedMap(new LinkedHashMap<UUID, ConnectionDetails>());
         this.maxNumOfPlayers = maxLobbySize;
     }
 
@@ -33,12 +33,12 @@ public class Lobby {
 
     public synchronized Map<UUID, ConnectionDetails> getClients() { return clients; }
 
-    public synchronized ConnectionDetails addClient(ConnectionDetails clientDetails) throws IllegalArgumentException {
+    public synchronized void addClient(ConnectionDetails clientDetails) throws IllegalArgumentException {
         if(clients.size() >= maxNumOfPlayers) {
             throw new IllegalArgumentException("The server is full. Could not join.");
         }
 
-        return clients.put(clientDetails.getPlayerId(), clientDetails);
+        clients.put(clientDetails.getPlayerId(), clientDetails);
     }
 
     public synchronized ConnectionDetails removeClient(UUID playerId) {
@@ -50,16 +50,21 @@ public class Lobby {
             return null;
     }
 
-    public void queuePacketToProcess(Packet message){
+    public synchronized void queuePacketToProcess(Packet message){
         this.server.queuePacket(message);
     }
 
     public void killAll() {
-        for(ConnectionDetails connection : Collections.synchronizedCollection(clients.values())){
-            connection.kill();
+        try {
+            for(ConnectionDetails connection : Collections.synchronizedCollection(clients.values())){
+                connection.kill();
+            }
+        }
+        catch (Exception e) {
+            // Connection was already killed
         }
 
-        synchronized(clients){
+        synchronized(clients) {
             clients.clear();
         }
     }

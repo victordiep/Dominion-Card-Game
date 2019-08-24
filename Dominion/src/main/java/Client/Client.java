@@ -1,6 +1,8 @@
 package Client;
 
+import Client.GUI.Element.Start.PlayerListMenu;
 import Server.ConnectionConfig;
+import javafx.application.Platform;
 import protobuf.PacketProtos.Packet;
 
 import java.io.IOException;
@@ -21,9 +23,6 @@ import java.util.*;
  */
 
 public class Client implements Runnable {
-
-    private DominionManager dominionManager;
-
     private UUID playerId;
     private String username;
     private InetAddress hostName;
@@ -35,11 +34,14 @@ public class Client implements Runnable {
     private ObjectOutputStream out; // Used to send messages from the server to the client
 
     private boolean isRunning = false; // Keeps track of whether the server is running
-    private Object isRunningLock;
+    private final Object isRunningLock;
     private boolean inLobby = false; // Keeps track of whether the server is in lobby waiting for connections
-    private Object inLobbyLock;
+    private final Object inLobbyLock;
     private boolean inGame = false; // Keeps track of whether the game has started
-    private Object inGameLock;
+    private final Object inGameLock;
+
+    private boolean isProcessing = false; // Keeps track of whether the client is already doing work
+    private final Object isProcessingLock;
 
     private Map<UUID, String> playerList;
 
@@ -47,6 +49,9 @@ public class Client implements Runnable {
         this.isRunningLock = new Object();
         this.inLobbyLock = new Object();
         this.inGameLock = new Object();
+        this.isProcessingLock = new Object();
+
+        this.playerList = Collections.synchronizedMap(new LinkedHashMap<>());
     }
 
     public void initialize(ConnectionConfig config) throws UnknownHostException {
@@ -55,14 +60,12 @@ public class Client implements Runnable {
         this.hostName = config.getHostName();
         this.localPort = config.getLocalPort();
         this.hostPort = config.getHostPort();
-
-        this.playerList = Collections.synchronizedMap(new HashMap<>());
     }
 
     public UUID getPlayerId() { return playerId; }
     public String getUsername() { return username; }
-    public synchronized int getPlayerListSize() { return playerList.size(); }
-    public synchronized List<String> getPlayers() { return new LinkedList<>(playerList.values()); }
+    public int getPlayerListSize() { return playerList.size(); }
+    public List<String> getPlayers() { return new LinkedList<>(playerList.values()); }
 
     @Override
     public void run() {
@@ -70,7 +73,26 @@ public class Client implements Runnable {
             connect();
 
             while(checkIfInLobby() && checkIfRunning()) {
+                try {
+                    Packet lobbyUpdate = read();
+                    System.out.println("Received");
+                    synchronized(isProcessingLock){
+                        while(isProcessing){
+                            try {
+                                isProcessingLock.wait();
+                            } catch (InterruptedException e) {
+                                isProcessing = false;
+                            }
+                        }
+                        isProcessing = true;
+                    }
 
+                    process(lobbyUpdate);
+                    System.out.println("Updated");
+                }
+                catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
 
             while(checkIfInGame() && checkIfRunning()) {
@@ -109,11 +131,7 @@ public class Client implements Runnable {
                 // Something went wrong
                 throw new IOException();
             } else {
-                setIfInLobby(true);
-
-                for (int i = 0; i < message.getMessageCount(); i++) {
-                    playerList.put(UUID.fromString(message.getAddon(i)), message.getMessage(i));
-                }
+                process(message);
             }
 
         } catch (ClassNotFoundException e) {
@@ -134,6 +152,35 @@ public class Client implements Runnable {
 
         } catch(IOException e){
             throw new IOException(e.getMessage());
+        }
+    }
+
+    public synchronized void process(Packet message) throws ClassNotFoundException, IOException {
+        synchronized(isProcessingLock){
+            isProcessing = true;
+        }
+
+        Packet.Type messageType = message.getType();
+
+        if (messageType == Packet.Type.LOBBY) {
+            setIfInLobby(true);
+
+            // Received update to lobby so clear and then rebuild player list
+            playerList.clear();
+            for (int i = 0; i < message.getMessageCount(); i++) {
+                playerList.put(UUID.fromString(message.getAddon(i)), message.getMessage(i));
+            }
+
+            Platform.runLater(PlayerListMenu::updatePlayerLobby);
+        }
+
+        finish();
+    }
+
+    public void finish(){
+        synchronized(isProcessingLock){
+            isProcessing = false;
+            isProcessingLock.notifyAll();
         }
     }
 

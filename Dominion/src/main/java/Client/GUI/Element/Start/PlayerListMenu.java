@@ -1,7 +1,9 @@
 package Client.GUI.Element.Start;
 
+import Client.DominionManager;
 import Client.GUI.Element.Misc.PlayerTag;
 import Client.GUI.Element.Misc.TranslucentRectangle;
+
 import javafx.geometry.Insets;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -14,7 +16,7 @@ import javafx.scene.text.Text;
 import static Constant.GuiSettings.StartScreen.*;
 
 public class PlayerListMenu extends BorderPane {
-    private VBox players;
+    private static VBox players;
 
     public PlayerListMenu(double x, double y) {
         // Background
@@ -23,7 +25,7 @@ public class PlayerListMenu extends BorderPane {
 
         // Player Lobby
         VBox lobby = new VBox();
-        lobby.setPadding(new Insets(y + 10, x, y, x + 20));
+        lobby.setPadding(new Insets(y, x, y, x + 20));
         lobby.setSpacing(10);
 
         Text lobbyText = new Text("Player Lobby:");
@@ -32,7 +34,6 @@ public class PlayerListMenu extends BorderPane {
 
         // Player Name Tags
         players = new VBox();
-        players.setSpacing(5);
 
         lobby.getChildren().add(lobbyText);
         lobby.getChildren().add(players);
@@ -41,9 +42,12 @@ public class PlayerListMenu extends BorderPane {
         getChildren().addAll(lobby_bg, lobby);
     }
 
-    public void addPlayer(final String username) {
-        PlayerTag playerName = new PlayerTag(username);
+    public synchronized static void updatePlayerLobby() {
+        players.getChildren().clear();
 
-        players.getChildren().add(playerName);
+        for (String name : DominionManager.getInstance().getPlayers()) {
+            PlayerTag playerName = new PlayerTag(name);
+            players.getChildren().add(playerName);
+        }
     }
 }

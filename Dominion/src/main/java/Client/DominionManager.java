@@ -67,16 +67,16 @@ public class DominionManager extends Application {
         primaryStage.setScene(scene);
 
         primaryStage.setOnCloseRequest(event -> {
-            if (server.checkIfRunning())
-                server.kill();
             if (client.checkIfRunning())
                 client.kill();
+            if (server.checkIfRunning())
+                server.kill();
         });
 
         primaryStage.show();
     }
 
-    public static DominionManager getInstance() {
+    public synchronized static DominionManager getInstance() {
         if (instance == null)
             instance = new DominionManager();
 
@@ -130,11 +130,17 @@ public class DominionManager extends Application {
         }
     }
 
+    public synchronized List<String> getPlayers() {
+        return this.client.getPlayers();
+    }
+
     public void createGame(List<String> kingdomCards) {
+        /*
         for (String name : kingdomCards) {
             System.out.println(name);
         }
         System.out.println(kingdomCards.size());
+        */
     }
 
 

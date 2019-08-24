@@ -224,7 +224,7 @@ public class StartMenu extends BorderPane {
 
         grid.add(txtAddress, 1, 3);
 
-        Label lblPort = new Label("Port");
+        Label lblPort = new Label("Host Port");
         lblPort.setTextFill(Color.WHITE);
         grid.add(lblPort, 0, 4);
 
