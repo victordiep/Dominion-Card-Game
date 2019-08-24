@@ -1,6 +1,5 @@
 package Client.GUI.Screen.Menus;
 
-import Client.EventHandler.EventHandlers;
 import Client.GUI.Element.Background;
 import Client.GUI.Element.Logo;
 import Client.GUI.Element.Start.PlayerListMenu;
@@ -16,12 +15,7 @@ import javafx.scene.layout.Pane;
  */
 
 public class StartPane extends Pane implements SceneState {
-
-    private EventHandlers startMenuEventHandlers;
-
-    public StartPane(EventHandlers startMenuEventHandlers) {
-        this.startMenuEventHandlers = startMenuEventHandlers;
-
+    public StartPane() {
         setup();
     }
 
@@ -38,7 +32,7 @@ public class StartPane extends Pane implements SceneState {
     }
 
     private void addStartMenu() {
-        getChildren().add(new StartMenu(START_RECT_X, START_RECT_Y, this.startMenuEventHandlers));
+        getChildren().add(new StartMenu(START_RECT_X, START_RECT_Y));
     }
 
 }

@@ -34,17 +34,19 @@ public class Client implements Runnable {
     private ObjectInputStream in; // Used to read messages coming from the client to the server
     private ObjectOutputStream out; // Used to send messages from the server to the client
 
-    private boolean isRunning; // Keeps track of whether the server is running
+    private boolean isRunning = false; // Keeps track of whether the server is running
     private Object isRunningLock;
-    private boolean inLobby; // Keeps track of whether the server is in lobby waiting for connections
+    private boolean inLobby = false; // Keeps track of whether the server is in lobby waiting for connections
     private Object inLobbyLock;
-    private boolean inGame; // Keeps track of whether the game has started
+    private boolean inGame = false; // Keeps track of whether the game has started
     private Object inGameLock;
 
     private Map<UUID, String> playerList;
 
     public Client() {
-
+        this.isRunningLock = new Object();
+        this.inLobbyLock = new Object();
+        this.inGameLock = new Object();
     }
 
     public void initialize(ConnectionConfig config) throws UnknownHostException {
@@ -53,13 +55,6 @@ public class Client implements Runnable {
         this.hostName = config.getHostName();
         this.localPort = config.getLocalPort();
         this.hostPort = config.getHostPort();
-
-        this.isRunning = false;
-        this.isRunningLock = new Object();
-        this.inLobby = false;
-        this.inLobbyLock = new Object();
-        this.inGame = false;
-        this.inGameLock = new Object();
 
         this.playerList = Collections.synchronizedMap(new HashMap<>());
     }
@@ -73,6 +68,15 @@ public class Client implements Runnable {
     public void run() {
         try {
             connect();
+
+            while(checkIfInLobby() && checkIfRunning()) {
+
+            }
+
+            while(checkIfInGame() && checkIfRunning()) {
+
+            }
+
         } catch (IOException e) {
 
         }
@@ -82,6 +86,7 @@ public class Client implements Runnable {
         try {
             // Setting up the socket
             this.socket = new Socket(hostName.getHostName(), hostPort);
+            setIfRunning(true);
 
             // Setting up input and output
             out = new ObjectOutputStream(socket.getOutputStream());
@@ -104,6 +109,8 @@ public class Client implements Runnable {
                 // Something went wrong
                 throw new IOException();
             } else {
+                setIfInLobby(true);
+
                 for (int i = 0; i < message.getMessageCount(); i++) {
                     playerList.put(UUID.fromString(message.getAddon(i)), message.getMessage(i));
                 }
@@ -188,6 +195,7 @@ public class Client implements Runnable {
 
             } catch(IOException e){
                 // The server is already closed
+                e.printStackTrace();
             }
         }
     }

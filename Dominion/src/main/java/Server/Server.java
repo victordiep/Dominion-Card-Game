@@ -17,17 +17,19 @@ public class Server implements Runnable {
     private Lobby lobby;
     private int numPlayersToStart;
 
-    private boolean isRunning; // Keeps track of whether the server is running
+    private boolean isRunning = false; // Keeps track of whether the server is running
     private Object isRunningLock;
-    private boolean inLobby; // Keeps track of whether the server is in lobby waiting for connections
+    private boolean inLobby = false; // Keeps track of whether the server is in lobby waiting for connections
     private Object inLobbyLock;
-    private boolean inGame; // Keeps track of whether the game has started
+    private boolean inGame = false; // Keeps track of whether the game has started
     private Object inGameLock;
 
     private List<Packet> packetQueue;
 
     public Server() {
-
+        this.isRunningLock = new Object();
+        this.inLobbyLock = new Object();
+        this.inGameLock = new Object();
     }
 
     public void initialize(ConnectionConfig config) throws IOException {
@@ -43,13 +45,6 @@ public class Server implements Runnable {
         this.lobby = new Lobby(this, numPlayersToStart);
         this.server = new ServerSocket(this.port);
         this.server.setSoTimeout(5000);
-
-        this.isRunning = false;
-        this.isRunningLock = new Object();
-        this.inLobby = false;
-        this.inLobbyLock = new Object();
-        this.inGame = false;
-        this.inGameLock = new Object();
 
         this.packetQueue = new ArrayList<>();
     }
@@ -94,7 +89,7 @@ public class Server implements Runnable {
     private void accept(){
         setIfRunning(true);
 
-        while(lobby.getNumPlayersConnected() < numPlayersToStart){
+        while(lobby.getNumPlayersConnected() < numPlayersToStart && checkIfRunning()){
             try {
                 if(lobby.getNumPlayersConnected() < numPlayersToStart){
                     setIfInLobby(true);

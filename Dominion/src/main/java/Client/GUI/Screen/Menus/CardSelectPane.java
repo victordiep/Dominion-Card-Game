@@ -42,7 +42,6 @@ public class CardSelectPane extends BorderPane implements SceneState {
         getChildren().add(new Background());
 
         List<String> cards = new ArrayList<>();
-
         cards.add("Artisan");
         cards.add("Bandit");
         cards.add("Bureaucrat");

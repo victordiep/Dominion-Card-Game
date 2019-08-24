@@ -1,6 +1,6 @@
 package Client.GUI.Element.Start;
 
-import Client.EventHandler.EventHandlers;
+import Client.DominionManager;
 import Client.GUI.Element.Form.StartMenuButton;
 import Client.GUI.Element.Misc.TranslucentRectangle;
 import static Constant.GuiSettings.StartScreen.*;
@@ -20,8 +20,6 @@ import javafx.scene.text.Text;
 
 public class StartMenu extends BorderPane {
 
-    EventHandlers startMenuEventHandlers;
-
     private Group startMenu;
     private Group hostMenu;
     private Group joinMenu;
@@ -29,9 +27,7 @@ public class StartMenu extends BorderPane {
     private final double x;
     private final double y;
 
-    public StartMenu(double x, double y, EventHandlers startMenuEventHandlers) {
-        this.startMenuEventHandlers = startMenuEventHandlers;
-
+    public StartMenu(double x, double y) {
         this.x = x;
         this.y = y;
 
@@ -125,7 +121,7 @@ public class StartMenu extends BorderPane {
         txtName.setFocusTraversable(false);
 
         txtName.textProperty().addListener((observable, oldName, newName) ->
-            startMenuEventHandlers.getConnectionConfig().setUsername(newName)
+            DominionManager.getInstance().getConnectionConfig().setUsername(newName)
         );
 
         grid.add(txtName, 1, 2);
@@ -139,17 +135,10 @@ public class StartMenu extends BorderPane {
         txtPort.setFocusTraversable(false);
 
         txtPort.textProperty().addListener((observable, oldPort, newPort) ->
-            startMenuEventHandlers.getConnectionConfig().setHostPort(Integer.parseInt(newPort))
+                DominionManager.getInstance().getConnectionConfig().setHostPort(Integer.parseInt(newPort))
         );
 
         grid.add(txtPort, 1, 3);
-
-        HBox buttons = new HBox();
-        buttons.setSpacing(5);
-
-        Button btnHost = new Button("Host Game");
-        btnHost.setFocusTraversable(false);
-        btnHost.setOnAction(startMenuEventHandlers.getHostGameEvent());
 
         Button btnBack = new Button("Go Back");
         btnBack.setMinWidth(80);
@@ -158,6 +147,19 @@ public class StartMenu extends BorderPane {
 
         btnBack.setOnMousePressed( e -> {
             switchToStartMenu();
+        });
+
+        HBox buttons = new HBox();
+        buttons.setSpacing(5);
+
+        Button btnHost = new Button("Host Game");
+        btnHost.setFocusTraversable(false);
+        btnHost.setOnAction(e -> {
+            txtName.setDisable(true);
+            txtPort.setDisable(true);
+            btnBack.setDisable(true);
+            btnHost.setDisable(true);
+            DominionManager.getInstance().hostGame();
         });
 
         buttons.getChildren().addAll(btnHost, btnBack);
@@ -204,7 +206,7 @@ public class StartMenu extends BorderPane {
         txtName.setFocusTraversable(false);
 
         txtName.textProperty().addListener((observable, oldName, newName) -> {
-            startMenuEventHandlers.getConnectionConfig().setUsername(newName);
+            DominionManager.getInstance().getConnectionConfig().setUsername(newName);
         });
 
         grid.add(txtName, 1, 2);
@@ -218,7 +220,7 @@ public class StartMenu extends BorderPane {
         txtAddress.setFocusTraversable(false);
 
         txtAddress.textProperty().addListener((observable, oldAddress, newAddress) ->
-            startMenuEventHandlers.getConnectionConfig().setHostName(newAddress)
+                DominionManager.getInstance().getConnectionConfig().setHostName(newAddress)
         );
 
         grid.add(txtAddress, 1, 3);
@@ -232,17 +234,13 @@ public class StartMenu extends BorderPane {
         txtPort.setFocusTraversable(false);
 
         txtPort.textProperty().addListener((observable, oldPort, newPort) ->
-            startMenuEventHandlers.getConnectionConfig().setHostPort(Integer.parseInt(newPort))
+                DominionManager.getInstance().getConnectionConfig().setHostPort(Integer.parseInt(newPort))
         );
 
         grid.add(txtPort, 1, 4);
 
         HBox buttons = new HBox();
         buttons.setSpacing(5);
-
-        Button btnJoin = new Button("Join Game");
-        btnJoin.setFocusTraversable(false);
-        btnJoin.setOnAction(startMenuEventHandlers.getJoinGameEvent());
 
         Button btnBack = new Button("Go Back");
         btnBack.setMinWidth(80);
@@ -251,6 +249,17 @@ public class StartMenu extends BorderPane {
 
         btnBack.setOnMousePressed( e -> {
             switchToStartMenu();
+        });
+
+        Button btnJoin = new Button("Join Game");
+        btnJoin.setFocusTraversable(false);
+        btnJoin.setOnAction(e -> {
+            txtName.setDisable(true);
+            txtAddress.setDisable(true);
+            txtPort.setDisable(true);
+            btnBack.setDisable(true);
+            btnJoin.setDisable(true);
+            DominionManager.getInstance().joinGame();
         });
 
         buttons.getChildren().addAll(btnJoin, btnBack);
