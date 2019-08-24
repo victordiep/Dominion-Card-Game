@@ -37,10 +37,17 @@ public class DominionManager extends Application {
 
     private Scene scene;
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        instance = this;
+    public DominionManager(){
+        super();
+        synchronized(DominionManager.class){
+            if(instance != null) throw new UnsupportedOperationException(
+                    getClass() + " is singleton but constructor called more than once");
+            instance = this;
+        }
+    }
 
+    @Override
+    public void start(Stage primaryStage) {
         primaryStage.setTitle("Dominion");
         primaryStage.setResizable(false);
         primaryStage.setWidth(WINDOW_WIDTH);
@@ -64,6 +71,9 @@ public class DominionManager extends Application {
     }
 
     public static DominionManager getInstance() {
+        if (instance == null)
+            instance = new DominionManager();
+
         return instance;
     }
 
