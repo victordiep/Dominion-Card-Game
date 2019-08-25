@@ -19,10 +19,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CardSelectPane extends BorderPane implements SceneState {
 
@@ -80,7 +77,6 @@ public class CardSelectPane extends BorderPane implements SceneState {
 
                 displayRow.getChildren().add(card);
             }
-
             display.getChildren().add(displayRow);
         }
 
@@ -206,7 +202,7 @@ public class CardSelectPane extends BorderPane implements SceneState {
         options.getChildren().addAll(enlargedCard, setupOptions);
     }
 
-    private Button createPresetButton(String name, List<String> preset) {
+    private Button createPresetButton(String name, Set<String> preset) {
         Button btnPreset = new Button(name);
         btnPreset.setMaxWidth(80);
         btnPreset.setFocusTraversable(false);
@@ -218,7 +214,7 @@ public class CardSelectPane extends BorderPane implements SceneState {
         return btnPreset;
     }
 
-    private void setPreset(List<String> preset) {
+    private void setPreset(Set<String> preset) {
         selectedCardNames.clear();
         selectedCardNames.addAll(preset);
         setSelectOnCards();

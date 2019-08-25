@@ -43,8 +43,8 @@ public class Server implements Runnable {
 
         //setting up fields
         this.port = port;
-        this.numPlayersToStart = 4; // Hard-code for now
-        this.lobby = new Lobby(this, numPlayersToStart);
+        this.numPlayersToStart = config.getLobbySize();
+        this.lobby = new Lobby(this, this.numPlayersToStart);
         this.server = new ServerSocket(this.port);
         this.server.setSoTimeout(5000);
     }
@@ -94,7 +94,7 @@ public class Server implements Runnable {
                 if(lobby.getNumPlayersConnected() < numPlayersToStart){
                     setIfInLobby(true);
                     Socket client = server.accept();
-                    System.out.println("Connected");
+
                     // Set up a listener so that the server listens to incoming client messages
                     Thread thread = new Thread(new ServerListener(lobby, client));
                     thread.start();

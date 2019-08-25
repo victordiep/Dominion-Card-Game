@@ -6,6 +6,7 @@ public class LaunchDefaults {
         public static final String DEFAULT_HOSTNAME = "localhost";
         public static final int DEFAULT_PORT = 4444;
         public static final String DEFAULT_USERNAME = "Player";
+        public static final int DEFAULT_LOBBY_SIZE = 4;
     }
 
 }

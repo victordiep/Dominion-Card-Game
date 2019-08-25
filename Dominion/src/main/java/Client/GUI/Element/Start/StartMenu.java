@@ -1,14 +1,17 @@
 package Client.GUI.Element.Start;
 
 import Client.DominionManager;
-import Client.GUI.Element.Form.StartMenuButton;
 import Client.GUI.Element.Misc.TranslucentRectangle;
 import static Constant.GuiSettings.StartScreen.*;
 
+import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
@@ -111,7 +114,7 @@ public class StartMenu extends BorderPane {
         grid.setHgap(10);
         grid.setPadding(new Insets(10));
 
-        Label lblName = new Label("Username");
+        final Label lblName = new Label("Username");
         lblName.setTextFill(Color.WHITE);
         grid.add(lblName, 0, 2);
 
@@ -125,7 +128,7 @@ public class StartMenu extends BorderPane {
 
         grid.add(txtName, 1, 2);
 
-        Label lblPort = new Label("Port");
+        final Label lblPort = new Label("Port");
         lblPort.setTextFill(Color.WHITE);
         grid.add(lblPort, 0, 3);
 
@@ -138,6 +141,26 @@ public class StartMenu extends BorderPane {
         );
 
         grid.add(txtPort, 1, 3);
+
+        final Label lblNumPlayers = new Label("Lobby Size");
+        lblNumPlayers.setTextFill(Color.WHITE);
+        grid.add(lblNumPlayers, 0, 4);
+
+        ObservableList<Integer> numPlayers =
+                FXCollections.observableArrayList(
+                        2,
+                        3,
+                        4
+                );
+        final ComboBox<Integer> cmbLobbySize = new ComboBox<>(numPlayers);
+        cmbLobbySize.setFocusTraversable(false);
+        cmbLobbySize.getSelectionModel().selectFirst();
+        DominionManager.getInstance().getConnectionConfig().setLobbySize(cmbLobbySize.getValue());
+        cmbLobbySize.valueProperty().addListener((ov, oldSize, newSize) ->
+                DominionManager.getInstance().getConnectionConfig().setLobbySize(newSize)
+        );
+
+        grid.add(cmbLobbySize, 1, 4);
 
         Button btnBack = new Button("Go Back");
         btnBack.setMinWidth(80);
@@ -156,6 +179,7 @@ public class StartMenu extends BorderPane {
         btnHost.setOnAction(e -> {
             txtName.setDisable(true);
             txtPort.setDisable(true);
+            cmbLobbySize.setDisable(true);
             btnBack.setDisable(true);
             btnHost.setDisable(true);
             DominionManager.getInstance().hostLobby();
@@ -163,7 +187,7 @@ public class StartMenu extends BorderPane {
 
         buttons.getChildren().addAll(btnHost, btnBack);
 
-        grid.add(buttons, 1, 4);
+        grid.add(buttons, 1, 5);
 
         options.getChildren().add(grid);
 

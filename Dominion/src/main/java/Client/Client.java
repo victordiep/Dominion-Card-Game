@@ -15,9 +15,6 @@ import java.net.UnknownHostException;
 import java.util.*;
 
 /*
- * - Client holds the DominionManager and has a thread that listens to it
- * - DominionManager keeps track of interactions made with the Client.GUI and stores it in a data collection for the client
- *   to send details of the interaction to the server
  * - The server then sends the interaction made to all other clients who will then perform the action on their local
  *   representation of the game
  */
@@ -46,20 +43,20 @@ public class Client implements Runnable {
     private Map<UUID, String> playerList;
 
     public Client() {
-        this.isRunningLock = new Object();
-        this.inLobbyLock = new Object();
-        this.inGameLock = new Object();
-        this.isProcessingLock = new Object();
+        isRunningLock = new Object();
+        inLobbyLock = new Object();
+        inGameLock = new Object();
+        isProcessingLock = new Object();
 
-        this.playerList = Collections.synchronizedMap(new LinkedHashMap<>());
+        playerList = Collections.synchronizedMap(new LinkedHashMap<>());
     }
 
     public void initialize(ConnectionConfig config) throws UnknownHostException {
-        this.playerId = UUID.randomUUID();
-        this.username = config.getUsername();
-        this.hostName = config.getHostName();
-        this.localPort = config.getLocalPort();
-        this.hostPort = config.getHostPort();
+        playerId = UUID.randomUUID();
+        username = config.getUsername();
+        hostName = config.getHostName();
+        localPort = config.getLocalPort();
+        hostPort = config.getHostPort();
     }
 
     public UUID getPlayerId() { return playerId; }
@@ -75,7 +72,7 @@ public class Client implements Runnable {
             while(checkIfInLobby() && checkIfRunning()) {
                 try {
                     Packet lobbyUpdate = read();
-                    System.out.println("Received");
+
                     synchronized(isProcessingLock){
                         while(isProcessing){
                             try {
@@ -88,7 +85,6 @@ public class Client implements Runnable {
                     }
 
                     process(lobbyUpdate);
-                    System.out.println("Updated");
                 }
                 catch (ClassNotFoundException e) {
                     e.printStackTrace();

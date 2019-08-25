@@ -1,4 +1,4 @@
-package Client.GUI.Element.Form;
+package Client.GUI.Element.Start;
 
 import javafx.geometry.Pos;
 import javafx.scene.effect.DropShadow;

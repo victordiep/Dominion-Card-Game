@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static Constant.GuiSettings.WindowDimensions.WINDOW_HEIGHT;
@@ -88,23 +89,27 @@ public class DominionManager extends Application {
     }
 
     public void switchToScreen(Parent content) {
-        previousScreen = new Group(this.scene.getRoot());
+        previousScreen = new Group(scene.getRoot());
         this.scene.setRoot(content);
     }
 
     public void switchToPreviousScreen() {
-        Group tempScreen = new Group(this.scene.getRoot());
+        Group tempScreen = new Group(scene.getRoot());
         this.scene.setRoot(previousScreen);
         previousScreen = tempScreen;
     }
 
     public void hostLobby() {
+        // A lobby is already being hosted
+        if (server.checkIfRunning())
+            return;
+
         try {
-            this.server.initialize(connectionConfig);
+            server.initialize(connectionConfig);
             Thread serverThread = new Thread(this.server);
             serverThread.start();
 
-            while (!this.server.checkIfRunning()) {
+            while (!server.checkIfRunning()) {
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {
@@ -121,8 +126,12 @@ public class DominionManager extends Application {
     }
 
     public void joinLobby() {
+        // We have already joined a lobby
+        if (client.checkIfRunning())
+            return;
+
         try {
-            this.client.initialize(connectionConfig);
+            client.initialize(connectionConfig);
             Thread clientThread = new Thread(client);
             clientThread.start();
         } catch (UnknownHostException e) {
@@ -131,7 +140,10 @@ public class DominionManager extends Application {
     }
 
     public synchronized List<String> getPlayers() {
-        return this.client.getPlayers();
+        return client.getPlayers();
+    }
+    public synchronized int getNumOfPlayers() {
+        return client.getPlayerListSize();
     }
 
     public void createGame(List<String> kingdomCards) {
@@ -141,6 +153,8 @@ public class DominionManager extends Application {
         }
         System.out.println(kingdomCards.size());
         */
+
+        game = new Game(kingdomCards, client.getPlayerId(), client.getUsername(), client.getPlayerListSize());
     }
 
 

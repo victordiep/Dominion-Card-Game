@@ -17,10 +17,13 @@ public class ConnectionConfig {
     private String hostname; // Server's hostname (IP address)
     private String username; // Username used for the game
 
+    private int lobbySize; // Username used for the game
+
     public ConnectionConfig() {
         this.localPort = DEFAULT_PORT;
         this.hostPort = DEFAULT_PORT;
         this.hostname = DEFAULT_HOSTNAME;
+        this.lobbySize = DEFAULT_LOBBY_SIZE;
         setUsername(DEFAULT_USERNAME);
     }
 
@@ -40,4 +43,7 @@ public class ConnectionConfig {
     public InetAddress getHostName() throws UnknownHostException { return InetAddress.getByName(this.hostname); }
     public void setHostName(String hostName) { this.hostname = hostName; }
 
+    // Lobby Size
+    public int getLobbySize() { return lobbySize; }
+    public void setLobbySize(int size) { this.lobbySize = size; }
 }

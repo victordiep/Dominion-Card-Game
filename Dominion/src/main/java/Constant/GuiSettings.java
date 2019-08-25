@@ -1,7 +1,6 @@
 package Constant;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static Constant.GuiSettings.WindowDimensions.*;
 
@@ -62,7 +61,7 @@ public class GuiSettings {
             add("Workshop");
         }};
 
-        public static final List<String> PRESET_FIRST_GAME = new ArrayList<>() {{
+        public static final Set<String> PRESET_FIRST_GAME = new LinkedHashSet<>() {{
             add("Cellar");
             add("Market");
             add("Merchant");
@@ -75,7 +74,7 @@ public class GuiSettings {
             add("Workshop");
         }};
 
-        public static final List<String> PRESET_SIZE_DISTORTION = new ArrayList<>() {{
+        public static final Set<String> PRESET_SIZE_DISTORTION = new LinkedHashSet<>() {{
             add("Artisan");
             add("Bandit");
             add("Bureaucrat");
@@ -88,7 +87,7 @@ public class GuiSettings {
             add("Workshop");
         }};
 
-        public static final List<String> PRESET_DECK_TOP = new ArrayList<>() {{
+        public static final Set<String> PRESET_DECK_TOP = new LinkedHashSet<>() {{
             add("Artisan");
             add("Bureaucrat");
             add("CouncilRoom");
@@ -101,7 +100,7 @@ public class GuiSettings {
             add("Village");
         }};
 
-        public static final List<String> PRESET_IMPROVEMENTS = new ArrayList<>() {{
+        public static final Set<String> PRESET_IMPROVEMENTS = new LinkedHashSet<>() {{
             add("Artisan");
             add("Cellar");
             add("Market");
@@ -114,7 +113,7 @@ public class GuiSettings {
             add("Witch");
         }};
 
-        public static final List<String> PRESET_SILVER_AND_GOLD = new ArrayList<>() {{
+        public static final Set<String> PRESET_SILVER_AND_GOLD = new LinkedHashSet<>() {{
             add("Bandit");
             add("Bureaucrat");
             add("Chapel");
@@ -128,5 +127,32 @@ public class GuiSettings {
         }};
 
         public static final int CARDS_PER_ROW = 6;
+    }
+
+    public static class GameSettings {
+        /*
+         * TURN
+         */
+        public static final int HAND_SIZE = 5;
+        public static final int NUMBER_OF_ACTIONS = 1;
+        public static final int NUMBER_OF_BUYS = 1;
+
+        /*
+         * SUPPLY
+         */
+        public static final int KINGDOM_CARD_PILE_SIZE = 10;
+
+        // Treasure
+        public static final int NUMBER_OF_COPPER = 60;
+        public static final int NUMBER_OF_SILVER = 40;
+        public static final int NUMBER_OF_GOLD = 30;
+
+        // Victory
+        public static final int NUMBER_OF_ESTATE = 24;
+        public static final int NUMBER_OF_DUCHY = 12;
+        public static final int NUMBER_OF_PROVINCE = 12;
+
+        // Curse
+        public static final int NUMBER_OF_CURSE = 30;
     }
 }

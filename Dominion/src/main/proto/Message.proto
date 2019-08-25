@@ -18,9 +18,10 @@ message Packet {
         BUY_CARD = 4;
         GAIN_CARD = 5;
         DRAW_CARD = 6;
-        END_TURN = 7;
-        END_GAME = 8;
-        TEST = 9;
+        START_TURN = 7;
+        END_TURN = 8;
+        END_GAME = 9;
+        TEST = 10;
     }
 
     Type type = 2;
