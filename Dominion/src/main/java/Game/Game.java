@@ -178,6 +178,10 @@ public class Game {
     public int getPlayerBuys() { return player.getBuys(); }
     public int getPlayerCoins() { return player.getCoins(); }
 
+    public void addActions(int num) { player.addActions(num); }
+    public void addBuys(int num) { player.addBuys(num); }
+    public void addCoins(int num) { player.addCoins(num); }
+
     public boolean purchaseCard(String name) throws IOException {
         if (getTurnPhase() == TurnPhase.BUY) {
             if (supply.get(name).getStock() > 0 && getPlayerCoins() >= CARD_COSTS.get(name) && getPlayerBuys() > 0) {
@@ -197,6 +201,10 @@ public class Game {
 
     public Card takeCard(String name) {
         return supply.get(name).take();
+    }
+
+    public boolean playCard(String name) {
+        return player.playCard(name);
     }
 
     public List<String> getKingdomCards() { return kingdomCards; }

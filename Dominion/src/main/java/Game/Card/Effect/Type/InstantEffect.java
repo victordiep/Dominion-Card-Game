@@ -1,5 +1,6 @@
 package Game.Card.Effect.Type;
 
+import Constant.EffectType;
 import Game.Card.Effect.Effect;
 
 /*
@@ -8,8 +9,8 @@ import Game.Card.Effect.Effect;
 
 public abstract class InstantEffect extends Effect {
 
-    public InstantEffect(Effect effect) {
-        super(effect);
+    public InstantEffect(String text) {
+        super(text, EffectType.INSTANT);
     }
 
 }

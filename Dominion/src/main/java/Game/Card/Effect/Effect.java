@@ -1,7 +1,6 @@
 package Game.Card.Effect;
 
 import Constant.EffectType;
-import Game.Game;
 
 /*
  * An effect represents the ability text of a card or part of the ability text of a card
@@ -11,6 +10,11 @@ public abstract class Effect {
 
     protected String text;
     protected EffectType effectType;
+
+    public Effect(String text, EffectType effectType) {
+        this.text = text;
+        this.effectType = effectType;
+    }
 
     public Effect(final Effect effect) {
         this.text = effect.text;
@@ -22,5 +26,5 @@ public abstract class Effect {
 
     public EffectType getType() { return effectType; }
 
-    public abstract boolean apply(Game game);
+    public abstract void apply();
 }

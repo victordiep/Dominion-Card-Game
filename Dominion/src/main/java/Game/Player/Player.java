@@ -70,7 +70,8 @@ public class Player {
     }
 
     public void addActions(int num) { actions = actions + num; }
-    public void addBuys(int num) { actions = buys + num; }
+    public void addBuys(int num) { buys = buys + num; }
+    public void addCoins(int num) { coins = coins + num; }
 
     public void shuffleDeck() {
         deck.shuffle();
@@ -158,9 +159,6 @@ public class Player {
             card.activate();
             result = true;
         }
-
-        if (!result)
-            System.out.println("Can't play card: " + name);
 
         return result;
     }

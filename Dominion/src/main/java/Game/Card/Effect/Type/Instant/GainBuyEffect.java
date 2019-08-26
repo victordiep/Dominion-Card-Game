@@ -2,16 +2,14 @@ package Game.Card.Effect.Type.Instant;
 
 import Game.Card.Effect.Effect;
 import Game.Card.Effect.Type.InstantEffect;
-import Game.Game;
 
 public class GainBuyEffect extends InstantEffect {
 
-    public GainBuyEffect(Effect effect) {
-        super(effect);
+    public GainBuyEffect(String text) {
+        super(text);
     }
 
     @Override
-    public boolean apply(Game game) {
-        return false;
+    public void apply() {
     }
 }

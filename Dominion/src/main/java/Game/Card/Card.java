@@ -1,8 +1,12 @@
 package Game.Card;
 
 import Constant.CardType;
+import Constant.EffectType;
+import Game.Card.Effect.Effect;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /*
@@ -14,12 +18,14 @@ public abstract class Card {
     protected String name;
     protected int cost;
     protected Set<CardType> types;
+    protected List<Effect> effects;
 
     public Card(String name, int cost) {
         this.name = name;
         this.cost = cost;
 
         types = new HashSet<>();
+        effects = new ArrayList<>();
     }
 
     public Card(final Card card) {
@@ -35,6 +41,9 @@ public abstract class Card {
 
     public void addType(CardType type) {
         types.add(type);
+    }
+    public void addEffect(Effect effect) {
+        effects.add(effect);
     }
 
     public boolean hasType(CardType type) {
@@ -63,5 +72,5 @@ public abstract class Card {
     public int hashCode() { return name.hashCode(); }
 
     @Override
-    public boolean equals(Object o) { return name.equals(o); }
+    public boolean equals(Object o) { return name.equals(o.toString()); }
 }

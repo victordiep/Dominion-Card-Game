@@ -2,6 +2,7 @@ package Client.GUI.Screen.Game;
 
 import Client.DominionManager;
 import Client.GUI.Element.Background;
+import Client.GUI.Element.Card.CardArt;
 import Client.GUI.Element.Game.*;
 import Client.GUI.Element.Misc.PlayerTag;
 import static Constant.CardSettings.DominionCards.*;
@@ -244,13 +245,16 @@ public class GamePane extends BorderPane implements SceneState {
     }
 
     private void makeHandInteractable() {
-        for (Node card: handDisplay.getCardArts()) {
-            card.setOnMouseEntered(e -> {
-                setCardArt((ImageView) card);
-            });
-
+        for (CardArt card: handDisplay.getCardArts()) {
+            card.setOnMouseEntered(e -> setCardArt(card));
             card.setOnMousePressed(e -> {
-                //GUIHandler.handlePlayCard(cardName)
+                if (game.playCard(card.getName())) {
+                    try {
+                        updateDisplay();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
             });
         }
     }
@@ -306,6 +310,10 @@ public class GamePane extends BorderPane implements SceneState {
                                                     .setType(Packet.Type.END_TURN)
                                                     .build());
 
+        updateDisplay();
+    }
+
+    public void updateDisplay() throws IOException {
         handDisplay.updateCards(game.getHandAsString());
         makeHandInteractable();
         deckDisplay.updateCardCount();
@@ -314,6 +322,7 @@ public class GamePane extends BorderPane implements SceneState {
         GameDetails.updateBuys();
         GameDetails.updateCoins();
     }
+
 
     public void updateSupply(String name) {
         game.takeCard(name);
