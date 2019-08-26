@@ -7,15 +7,15 @@ import javafx.scene.image.ImageView;
 public class CardArt extends ImageView {
     private final String name;
 
-    public CardArt(String name) {
+    public CardArt(String name, double width, double height) {
         this.name = name.trim();
 
         Image image = new Image(getCorrectImagePath(name));
         setImage(image);
         setSmooth(true);
         setCache(true);
-        setFitWidth(100);
-        setFitHeight(159);
+        setFitWidth(width);
+        setFitHeight(height);
     }
 
     private String getCorrectImagePath(String name) {

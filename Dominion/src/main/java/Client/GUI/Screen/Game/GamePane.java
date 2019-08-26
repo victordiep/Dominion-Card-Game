@@ -1,8 +1,12 @@
 package Client.GUI.Screen.Game;
 
+import Client.GUI.Element.Background;
 import Client.GUI.Element.Game.*;
 import Client.GUI.Element.Misc.PlayerTag;
 import static Constant.CardSettings.DominionCards.*;
+import static Constant.GuiSettings.GameScreen.*;
+
+import Client.GUI.Screen.SceneState;
 import Game.Game;
 
 import javafx.geometry.Insets;
@@ -16,12 +20,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-
-
-public class GamePane extends BorderPane {
+public class GamePane extends BorderPane implements SceneState {
 
     private Game game;
 
@@ -35,22 +37,11 @@ public class GamePane extends BorderPane {
     private GameDetails turnDetails;
     private HandDisplay handDisplay;
 
-    public GamePane(List<String> kingdomCards, List<String> playerNames) {
-        this.kingdomCards = kingdomCards;
-        this.playerNames = playerNames;
+    public GamePane(Game game, List<String> playerNames) {
+        this.game = game;
+        this.playerNames = new ArrayList<>(playerNames);
 
-        VBox leftPane = new VBox();
-        setupLeft(leftPane);
-
-        VBox centerPane = new VBox();
-        setupCenter(centerPane);
-
-        TabPane rightPane = new TabPane();
-        setupRight(rightPane);
-
-        setLeft(leftPane);
-        setRight(rightPane);
-        setCenter(centerPane);
+        setup();
     }
 
     /*
@@ -90,7 +81,7 @@ public class GamePane extends BorderPane {
 
         HBox treasureCards = new HBox();
         for (String name : TREASURE_CARDS) {
-            PurchaseableCard purchaseableCard = new PurchaseableCard(name);
+            PurchaseableCard purchaseableCard = new PurchaseableCard(name, game.getStock(name), GAME_CARD_WIDTH, GAME_CARD_HEIGHT);
 
             purchaseableCard.setOnMouseEntered(e -> {
                 setCardArt(purchaseableCard.getCardArt());
@@ -101,7 +92,7 @@ public class GamePane extends BorderPane {
 
         HBox victoryCards = new HBox();
         for (String name : VICTORY_CARDS) {
-            PurchaseableCard purchaseableCard = new PurchaseableCard(name);
+            PurchaseableCard purchaseableCard = new PurchaseableCard(name, game.getStock(name), GAME_CARD_WIDTH, GAME_CARD_HEIGHT);
 
             purchaseableCard.setOnMouseEntered(e -> {
                 setCardArt(purchaseableCard.getCardArt());
@@ -112,7 +103,7 @@ public class GamePane extends BorderPane {
 
         HBox curseCards = new HBox();
         for (String name : CURSE_CARDS) {
-            PurchaseableCard purchaseableCard = new PurchaseableCard(name);
+            PurchaseableCard purchaseableCard = new PurchaseableCard(name, game.getStock(name), GAME_CARD_WIDTH, GAME_CARD_HEIGHT);
 
             purchaseableCard.setOnMouseEntered(e -> {
                 setCardArt(purchaseableCard.getCardArt());
@@ -129,7 +120,7 @@ public class GamePane extends BorderPane {
     private HBox createDeckAndDiscard() {
         HBox deckAndDiscard = new HBox();
 
-        DeckDisplay deckDisplay = new DeckDisplay(5);
+        DeckDisplay deckDisplay = new DeckDisplay(game.getDeckSize());
         DiscardDisplay discardPileDisplay = new DiscardDisplay();
 
         deckAndDiscard.getChildren().addAll(deckDisplay, discardPileDisplay);
@@ -170,16 +161,6 @@ public class GamePane extends BorderPane {
 
         // HandDisplay
         handDisplay = new HandDisplay();
-
-        /*
-        List<String> test = new ArrayList<>();
-        test.add("Estate");
-        test.add("Copper");
-        test.add("Estate");
-        test.add("Copper");
-        test.add("Copper");
-        handDisplay.addCards(test);
-        */
 
         makeHandInteractable();
 
@@ -223,7 +204,8 @@ public class GamePane extends BorderPane {
             cardRow.setSpacing(5);
 
             for (int col = 0; col < 5; col++) {
-                PurchaseableCard purchaseableCard = new PurchaseableCard(kingdomCards.get(cardIndex++));
+                String name = kingdomCards.get(cardIndex++);
+                PurchaseableCard purchaseableCard = new PurchaseableCard(name, game.getStock(name), GAME_CARD_WIDTH, GAME_CARD_HEIGHT);
                 cardRow.getChildren().add(purchaseableCard);
 
                 purchaseableCard.setOnMouseEntered(e -> {
@@ -273,5 +255,25 @@ public class GamePane extends BorderPane {
                 //GUIHandler.handlePlayCard(cardName)
             });
         }
+    }
+
+    @Override
+    public void setup() {
+        getChildren().addAll(new Background());
+
+        this.kingdomCards = new ArrayList<>(game.getKingdomCards());
+
+        VBox leftPane = new VBox();
+        setupLeft(leftPane);
+
+        VBox centerPane = new VBox();
+        setupCenter(centerPane);
+
+        TabPane rightPane = new TabPane();
+        setupRight(rightPane);
+
+        setLeft(leftPane);
+        setRight(rightPane);
+        setCenter(centerPane);
     }
 }

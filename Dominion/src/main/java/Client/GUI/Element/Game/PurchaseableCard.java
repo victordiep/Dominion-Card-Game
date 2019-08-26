@@ -8,7 +8,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
-import static Constant.CardSettings.DominionCards.KINGDOM_CARD_COSTS;
+import static Constant.CardSettings.DominionCards.*;
 import static Constant.GuiSettings.GameSettings.KINGDOM_CARD_PILE_SIZE;
 
 public class PurchaseableCard extends StackPane {
@@ -18,11 +18,19 @@ public class PurchaseableCard extends StackPane {
     private int numberInStock;
     private int cardCost;
 
-    public PurchaseableCard(String cardName) {
-        cardArt = new CardArt(cardName);
+    public PurchaseableCard(String cardName, int stock, double width, double height) {
+        cardArt = new CardArt(cardName, width, height);
 
-        cardCost = KINGDOM_CARD_COSTS.get(cardName);
-        numberInStock = KINGDOM_CARD_PILE_SIZE;
+        if (KINGDOM_CARD_COSTS.containsKey(cardName))
+            cardCost = KINGDOM_CARD_COSTS.get(cardName);
+        else if (TREASURE_CARD_COSTS.containsKey(cardName))
+            cardCost = TREASURE_CARD_COSTS.get(cardName);
+        else if (VICTORY_CARD_COSTS.containsKey(cardName))
+            cardCost = VICTORY_CARD_COSTS.get(cardName);
+        else if (CURSE_CARD_COSTS.containsKey(cardName))
+            cardCost = CURSE_CARD_COSTS.get(cardName);
+
+        numberInStock = stock;
 
         getChildren().add(cardArt);
         getChildren().add(createStockOverlay());

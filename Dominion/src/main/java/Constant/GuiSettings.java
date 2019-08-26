@@ -127,6 +127,9 @@ public class GuiSettings {
         }};
 
         public static final int CARDS_PER_ROW = 6;
+
+        public static final double CARD_WIDTH = 100;
+        public static final double CARD_HEIGHT = 159;
     }
 
     public static class GameSettings {
@@ -154,5 +157,10 @@ public class GuiSettings {
 
         // Curse
         public static final int NUMBER_OF_CURSE = 30;
+    }
+
+    public static class GameScreen {
+        public static final double GAME_CARD_WIDTH = 75;
+        public static final double GAME_CARD_HEIGHT = 119.25;
     }
 }

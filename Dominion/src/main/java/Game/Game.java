@@ -2,7 +2,6 @@ package Game;
 
 import static Constant.GuiSettings.GameSettings.*;
 
-import Client.DominionManager;
 import Constant.TurnPhase;
 import Game.Card.Card;
 import Game.Card.CardFactory;
@@ -15,6 +14,8 @@ import java.util.*;
 public class Game {
 
     private Player player;
+    private final List<UUID> playerIds;
+    private final List<String> playerNames;
     private final int numOfPlayers;
 
     private final List<String> kingdomCards;
@@ -28,11 +29,13 @@ public class Game {
 
     private static TurnPhase turnPhase = TurnPhase.INACTIVE;
 
-    public Game(List<String> kingdomCards, UUID playerId, String name, int numOfPlayers) {
+    public Game(List<String> kingdomCards, UUID playerId, String name, List<UUID> playerIds, List<String> playerNames) {
         this.player = new Player(playerId, name);
+        this.playerNames = new ArrayList<>(playerNames);
+        this.playerIds = new ArrayList<>(playerIds);
+        this.numOfPlayers = this.playerNames.size();
 
-        this.numOfPlayers = numOfPlayers;
-        this.kingdomCards = kingdomCards;
+        this.kingdomCards = new ArrayList<>(kingdomCards);
         cardFactory = new CardFactory(this);
 
         supply = new HashMap<>();
@@ -65,6 +68,18 @@ public class Game {
 
         // Curse CardPile
         supply.put("Curse", new SupplyPile(createCard("Curse"), NUMBER_OF_CURSE));
+    }
+
+    public int getStock(String name) {
+        return supply.get(name).getStock();
+    }
+
+    public int getDeckSize() {
+        return player.getDeckSize();
+    }
+
+    public int getDiscardSize() {
+        return player.getDiscardSize();
     }
 
     public Card createCard(String name) {

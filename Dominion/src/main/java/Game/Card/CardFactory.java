@@ -26,7 +26,6 @@ public class CardFactory {
             return new Bureaucrat();
         }
         else if (name.equalsIgnoreCase("Cellar")) {
-            System.out.println("test");
             return new Cellar();
         }
         else if (name.equalsIgnoreCase("Chapel")) {

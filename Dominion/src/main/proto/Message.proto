@@ -13,15 +13,17 @@ message Packet {
     enum Type {
         CONNECTION = 0;
         LOBBY = 1;
-        START_GAME = 2;
-        PLAY_CARD =3;
-        BUY_CARD = 4;
-        GAIN_CARD = 5;
-        DRAW_CARD = 6;
-        START_TURN = 7;
-        END_TURN = 8;
-        END_GAME = 9;
-        TEST = 10;
+        CARD_LIST = 2;
+        START_GAME = 3;
+        SELECT_TURN = 4;
+        PLAY_CARD = 5;
+        BUY_CARD = 6;
+        GAIN_CARD = 7;
+        DRAW_CARD = 8;
+        START_TURN = 9;
+        END_TURN = 10;
+        END_GAME = 11;
+        TEST = 12;
     }
 
     Type type = 2;

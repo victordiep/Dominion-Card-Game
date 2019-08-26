@@ -19,6 +19,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
+import java.io.IOException;
 import java.util.*;
 
 public class CardSelectPane extends BorderPane implements SceneState {
@@ -70,7 +71,7 @@ public class CardSelectPane extends BorderPane implements SceneState {
             displayRow.setSpacing(10);
 
             for (int col = 0; col < CARDS_PER_ROW && cardIndex < numOfCards; col++) {
-                CardArt card = new CardArt(cards.get(cardIndex));
+                CardArt card = new CardArt(cards.get(cardIndex), CARD_WIDTH, CARD_HEIGHT);
                 setMouseEffects(card);
 
                 availableCards.put(cards.get(cardIndex++), card);
@@ -194,7 +195,11 @@ public class CardSelectPane extends BorderPane implements SceneState {
         btnSubmit.setStyle("-fx-text-fill: white; -fx-background: white; -fx-background-color: green");
 
         btnSubmit.setOnMousePressed( e -> {
-            submitCards();
+            try {
+                submitCards();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         });
 
         setupOptions.getChildren().addAll(text, grid, btnSubmit);
@@ -241,8 +246,8 @@ public class CardSelectPane extends BorderPane implements SceneState {
         }
     }
 
-    private void submitCards() {
-        DominionManager.getInstance().createGame(selectedCardNames);
+    private void submitCards() throws IOException {
+        DominionManager.getInstance().setKingdomCards(selectedCardNames);
         DominionManager.getInstance().switchToPreviousScreen();
     }
 }

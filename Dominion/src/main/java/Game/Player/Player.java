@@ -50,6 +50,9 @@ public class Player {
     public final int getActions() { return actions; }
     public final int getBuys() { return buys; }
 
+    public final int getDeckSize() { return deck.size(); }
+    public final int getDiscardSize() { return discard.size(); }
+
     public void addActions(int num) { actions = actions + num; }
     public void addBuys(int num) { actions = buys + num; }
 

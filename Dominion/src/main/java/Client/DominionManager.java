@@ -11,11 +11,12 @@ import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import protobuf.PacketProtos.Packet;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static Constant.GuiSettings.WindowDimensions.WINDOW_HEIGHT;
@@ -34,6 +35,8 @@ public class DominionManager extends Application {
 
     private static DominionManager instance = null;
     private static Game game = null;
+    private List<String> kingdomCards;
+    private boolean cardsHaveBeenSelected = false;
 
     private ConnectionConfig connectionConfig = null;
 
@@ -145,18 +148,24 @@ public class DominionManager extends Application {
     public synchronized int getNumOfPlayers() {
         return client.getPlayerListSize();
     }
-
-    public void createGame(List<String> kingdomCards) {
-        /*
-        for (String name : kingdomCards) {
-            System.out.println(name);
-        }
-        System.out.println(kingdomCards.size());
-        */
-
-        game = new Game(kingdomCards, client.getPlayerId(), client.getUsername(), client.getPlayerListSize());
+    public synchronized boolean getIfCardsSelected() {
+        return cardsHaveBeenSelected;
+    }
+    public synchronized List<String> getKingdomCards() {
+        return kingdomCards;
+    }
+    public synchronized void setKingdomCards(List<String> kingdomCards) {
+        this.kingdomCards = new ArrayList<>(kingdomCards);
+        cardsHaveBeenSelected = true;
     }
 
+    public synchronized void createGame(List<String> kingdomCards) {
+        game = new Game(kingdomCards, client.getPlayerId(), client.getUsername(), client.getPlayerIds(), client.getPlayers());
+    }
+
+    public synchronized Game getGame() {
+        return game;
+    }
 
     public void processEvent() {
         //client.process()

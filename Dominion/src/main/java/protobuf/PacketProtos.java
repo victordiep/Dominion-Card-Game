@@ -246,41 +246,49 @@ public final class PacketProtos {
        */
       LOBBY(1),
       /**
-       * <code>START_GAME = 2;</code>
+       * <code>CARD_LIST = 2;</code>
        */
-      START_GAME(2),
+      CARD_LIST(2),
       /**
-       * <code>PLAY_CARD = 3;</code>
+       * <code>START_GAME = 3;</code>
        */
-      PLAY_CARD(3),
+      START_GAME(3),
       /**
-       * <code>BUY_CARD = 4;</code>
+       * <code>SELECT_TURN = 4;</code>
        */
-      BUY_CARD(4),
+      SELECT_TURN(4),
       /**
-       * <code>GAIN_CARD = 5;</code>
+       * <code>PLAY_CARD = 5;</code>
        */
-      GAIN_CARD(5),
+      PLAY_CARD(5),
       /**
-       * <code>DRAW_CARD = 6;</code>
+       * <code>BUY_CARD = 6;</code>
        */
-      DRAW_CARD(6),
+      BUY_CARD(6),
       /**
-       * <code>START_TURN = 7;</code>
+       * <code>GAIN_CARD = 7;</code>
        */
-      START_TURN(7),
+      GAIN_CARD(7),
       /**
-       * <code>END_TURN = 8;</code>
+       * <code>DRAW_CARD = 8;</code>
        */
-      END_TURN(8),
+      DRAW_CARD(8),
       /**
-       * <code>END_GAME = 9;</code>
+       * <code>START_TURN = 9;</code>
        */
-      END_GAME(9),
+      START_TURN(9),
       /**
-       * <code>TEST = 10;</code>
+       * <code>END_TURN = 10;</code>
        */
-      TEST(10),
+      END_TURN(10),
+      /**
+       * <code>END_GAME = 11;</code>
+       */
+      END_GAME(11),
+      /**
+       * <code>TEST = 12;</code>
+       */
+      TEST(12),
       UNRECOGNIZED(-1),
       ;
 
@@ -293,41 +301,49 @@ public final class PacketProtos {
        */
       public static final int LOBBY_VALUE = 1;
       /**
-       * <code>START_GAME = 2;</code>
+       * <code>CARD_LIST = 2;</code>
        */
-      public static final int START_GAME_VALUE = 2;
+      public static final int CARD_LIST_VALUE = 2;
       /**
-       * <code>PLAY_CARD = 3;</code>
+       * <code>START_GAME = 3;</code>
        */
-      public static final int PLAY_CARD_VALUE = 3;
+      public static final int START_GAME_VALUE = 3;
       /**
-       * <code>BUY_CARD = 4;</code>
+       * <code>SELECT_TURN = 4;</code>
        */
-      public static final int BUY_CARD_VALUE = 4;
+      public static final int SELECT_TURN_VALUE = 4;
       /**
-       * <code>GAIN_CARD = 5;</code>
+       * <code>PLAY_CARD = 5;</code>
        */
-      public static final int GAIN_CARD_VALUE = 5;
+      public static final int PLAY_CARD_VALUE = 5;
       /**
-       * <code>DRAW_CARD = 6;</code>
+       * <code>BUY_CARD = 6;</code>
        */
-      public static final int DRAW_CARD_VALUE = 6;
+      public static final int BUY_CARD_VALUE = 6;
       /**
-       * <code>START_TURN = 7;</code>
+       * <code>GAIN_CARD = 7;</code>
        */
-      public static final int START_TURN_VALUE = 7;
+      public static final int GAIN_CARD_VALUE = 7;
       /**
-       * <code>END_TURN = 8;</code>
+       * <code>DRAW_CARD = 8;</code>
        */
-      public static final int END_TURN_VALUE = 8;
+      public static final int DRAW_CARD_VALUE = 8;
       /**
-       * <code>END_GAME = 9;</code>
+       * <code>START_TURN = 9;</code>
        */
-      public static final int END_GAME_VALUE = 9;
+      public static final int START_TURN_VALUE = 9;
       /**
-       * <code>TEST = 10;</code>
+       * <code>END_TURN = 10;</code>
        */
-      public static final int TEST_VALUE = 10;
+      public static final int END_TURN_VALUE = 10;
+      /**
+       * <code>END_GAME = 11;</code>
+       */
+      public static final int END_GAME_VALUE = 11;
+      /**
+       * <code>TEST = 12;</code>
+       */
+      public static final int TEST_VALUE = 12;
 
 
       public final int getNumber() {
@@ -350,15 +366,17 @@ public final class PacketProtos {
         switch (value) {
           case 0: return CONNECTION;
           case 1: return LOBBY;
-          case 2: return START_GAME;
-          case 3: return PLAY_CARD;
-          case 4: return BUY_CARD;
-          case 5: return GAIN_CARD;
-          case 6: return DRAW_CARD;
-          case 7: return START_TURN;
-          case 8: return END_TURN;
-          case 9: return END_GAME;
-          case 10: return TEST;
+          case 2: return CARD_LIST;
+          case 3: return START_GAME;
+          case 4: return SELECT_TURN;
+          case 5: return PLAY_CARD;
+          case 6: return BUY_CARD;
+          case 7: return GAIN_CARD;
+          case 8: return DRAW_CARD;
+          case 9: return START_TURN;
+          case 10: return END_TURN;
+          case 11: return END_GAME;
+          case 12: return TEST;
           default: return null;
         }
       }
@@ -1418,14 +1436,15 @@ public final class PacketProtos {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\rMessage.proto\022\010protobuf\"\200\002\n\006Packet\022\014\n\004" +
+      "\n\rMessage.proto\022\010protobuf\"\240\002\n\006Packet\022\014\n\004" +
       "UUID\030\001 \001(\t\022#\n\004type\030\002 \001(\0162\025.protobuf.Pack" +
       "et.Type\022\017\n\007message\030\003 \003(\t\022\r\n\005addon\030\004 \003(\t\"" +
-      "\242\001\n\004Type\022\016\n\nCONNECTION\020\000\022\t\n\005LOBBY\020\001\022\016\n\nS" +
-      "TART_GAME\020\002\022\r\n\tPLAY_CARD\020\003\022\014\n\010BUY_CARD\020\004" +
-      "\022\r\n\tGAIN_CARD\020\005\022\r\n\tDRAW_CARD\020\006\022\016\n\nSTART_" +
-      "TURN\020\007\022\014\n\010END_TURN\020\010\022\014\n\010END_GAME\020\t\022\010\n\004TE" +
-      "ST\020\nB\016B\014PacketProtosb\006proto3"
+      "\302\001\n\004Type\022\016\n\nCONNECTION\020\000\022\t\n\005LOBBY\020\001\022\r\n\tC" +
+      "ARD_LIST\020\002\022\016\n\nSTART_GAME\020\003\022\017\n\013SELECT_TUR" +
+      "N\020\004\022\r\n\tPLAY_CARD\020\005\022\014\n\010BUY_CARD\020\006\022\r\n\tGAIN" +
+      "_CARD\020\007\022\r\n\tDRAW_CARD\020\010\022\016\n\nSTART_TURN\020\t\022\014" +
+      "\n\010END_TURN\020\n\022\014\n\010END_GAME\020\013\022\010\n\004TEST\020\014B\016B\014" +
+      "PacketProtosb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

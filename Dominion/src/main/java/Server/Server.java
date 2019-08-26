@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import Client.DominionManager;
+import Client.GUI.Screen.SceneState;
 import protobuf.PacketProtos.Packet;
 
 public class Server implements Runnable {
@@ -60,16 +62,20 @@ public class Server implements Runnable {
     @Override
     public void run() {
         // Wait for connections until the lobby is full
-        accept();
+        try {
+            accept();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // Lobby is now full, start the game
         try {
             if (checkIfRunning()) {
                 // Broadcast to all players in lobby that the game is starting
                 broadcast(Packet.newBuilder()
-                        .setUUID("SERVER")
-                        .setType(Packet.Type.START_GAME)
-                        .build());
+                            .setUUID("SERVER")
+                            .setType(Packet.Type.START_GAME)
+                            .build());
 
                 // Stop any new connections to be made to the server socket
                 server.close();
@@ -86,7 +92,7 @@ public class Server implements Runnable {
     }
 
     // Handles incoming connections from clients
-    private void accept(){
+    private void accept() throws IOException {
         setIfRunning(true);
 
         while(lobby.getNumPlayersConnected() < numPlayersToStart && checkIfRunning()){
@@ -109,6 +115,18 @@ public class Server implements Runnable {
                 e.printStackTrace();
             }
         }
+
+        while (!DominionManager.getInstance().getIfCardsSelected()) {}
+
+        // Broadcast the card list
+        Packet.Builder cardListMsg = Packet.newBuilder()
+                .setUUID("SERVER")
+                .setType(Packet.Type.CARD_LIST);
+        for (String name : DominionManager.getInstance().getKingdomCards()) {
+            cardListMsg.addMessage(name);
+        }
+        System.out.println();
+        broadcast(cardListMsg.build());
 
         setIfInLobby(false);
     }

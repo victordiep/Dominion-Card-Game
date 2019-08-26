@@ -1,23 +1,20 @@
 package Constant;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class CardSettings {
 
     public static class DominionCards {
 
-        public static final Set<String> CURSE_CARDS = new HashSet<>() {{
+        public static final Set<String> CURSE_CARDS = new LinkedHashSet<>() {{
             add("Curse");
         }};
 
-        public static final Map<String, Integer> CURSE_CARD_COSTS = new HashMap<>() {{
+        public static final Map<String, Integer> CURSE_CARD_COSTS = new LinkedHashMap<>() {{
             put("Curse", 0);
         }};
 
-        public static final Set<String> KINGDOM_CARDS = new HashSet<>() {{
+        public static final Set<String> KINGDOM_CARDS = new LinkedHashSet<>() {{
             add("Artisan");
             add("Bandit");
             add("Bureaucrat");
@@ -46,7 +43,7 @@ public class CardSettings {
             add("Workshop");
         }};
 
-        public static final Map<String, Integer> KINGDOM_CARD_COSTS = new HashMap<>() {{
+        public static final Map<String, Integer> KINGDOM_CARD_COSTS = new LinkedHashMap<>() {{
             put("Artisan", 6);
             put("Bandit", 5);
             put("Bureaucrat", 4);
@@ -75,27 +72,27 @@ public class CardSettings {
             put("Workshop", 3);
         }};
 
-        public static final Set<String> TREASURE_CARDS = new HashSet<>() {{
+        public static final Set<String> TREASURE_CARDS = new LinkedHashSet<>() {{
             add("Copper");
-            add("Gold");
             add("Silver");
+            add("Gold");
         }};
 
-        public static final Map<String, Integer> TREASURE_CARD_COSTS = new HashMap<>() {{
+        public static final Map<String, Integer> TREASURE_CARD_COSTS = new LinkedHashMap<>() {{
             put("Copper", 0);
-            put("Gold", 6);
             put("Silver", 3);
+            put("Gold", 6);
         }};
 
-        public static final Set<String> VICTORY_CARDS = new HashSet<>() {{
-            add("Duchy");
+        public static final Set<String> VICTORY_CARDS = new LinkedHashSet<>() {{
             add("Estate");
+            add("Duchy");
             add("Province");
         }};
 
-        public static final Map<String, Integer> VICTORY_CARD_COSTS = new HashMap<>() {{
-            put("Duchy", 5);
+        public static final Map<String, Integer> VICTORY_CARD_COSTS = new LinkedHashMap<>() {{
             put("Estate", 2);
+            put("Duchy", 5);
             put("Province", 8);
         }};
     }

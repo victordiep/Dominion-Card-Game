@@ -7,6 +7,8 @@ import javafx.scene.layout.HBox;
 import java.util.ArrayList;
 import java.util.List;
 
+import static Constant.GuiSettings.GameScreen.*;
+
 public class HandDisplay extends HBox {
     List<String> cardNames;
 
@@ -17,7 +19,7 @@ public class HandDisplay extends HBox {
 
     public void addCards(List<String> cardNames) {
         for (String cardName : cardNames) {
-            CardArt cardArt = new CardArt(cardName);
+            CardArt cardArt = new CardArt(cardName, GAME_CARD_WIDTH, GAME_CARD_HEIGHT);
             getChildren().add(cardArt);
         }
 

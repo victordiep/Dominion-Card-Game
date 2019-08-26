@@ -1,6 +1,7 @@
 package Client;
 
 import Client.GUI.Element.Start.PlayerListMenu;
+import Client.GUI.Screen.Game.GamePane;
 import Server.ConnectionConfig;
 import javafx.application.Platform;
 import protobuf.PacketProtos.Packet;
@@ -63,15 +64,16 @@ public class Client implements Runnable {
     public String getUsername() { return username; }
     public int getPlayerListSize() { return playerList.size(); }
     public List<String> getPlayers() { return new LinkedList<>(playerList.values()); }
+    public List<UUID> getPlayerIds() { return new LinkedList<>(playerList.keySet()); }
 
     @Override
     public void run() {
         try {
             connect();
 
-            while(checkIfInLobby() && checkIfRunning()) {
+            while((checkIfInLobby() || checkIfInGame()) && checkIfRunning()) {
                 try {
-                    Packet lobbyUpdate = read();
+                    Packet message = read();
 
                     synchronized(isProcessingLock){
                         while(isProcessing){
@@ -84,15 +86,11 @@ public class Client implements Runnable {
                         isProcessing = true;
                     }
 
-                    process(lobbyUpdate);
+                    process(message);
                 }
                 catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
-            }
-
-            while(checkIfInGame() && checkIfRunning()) {
-
             }
 
         } catch (IOException e) {
@@ -151,7 +149,7 @@ public class Client implements Runnable {
         }
     }
 
-    public synchronized void process(Packet message) throws ClassNotFoundException, IOException {
+    public void process(Packet message) throws ClassNotFoundException, IOException {
         synchronized(isProcessingLock){
             isProcessing = true;
         }
@@ -168,6 +166,15 @@ public class Client implements Runnable {
             }
 
             Platform.runLater(PlayerListMenu::updatePlayerLobby);
+        }
+        else if (messageType == Packet.Type.CARD_LIST) {
+            if (DominionManager.getInstance().getGame() == null)
+                DominionManager.getInstance().createGame(message.getMessageList());
+        }
+        else if (messageType == Packet.Type.START_GAME) {
+            setIfInLobby(false);
+            setIfInGame(true);
+            DominionManager.getInstance().switchToScreen(new GamePane(DominionManager.getInstance().getGame(), getPlayers()));
         }
 
         finish();

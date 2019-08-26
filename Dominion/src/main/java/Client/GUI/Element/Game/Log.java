@@ -25,9 +25,7 @@ public class Log extends Tab {
         log.setSpacing(1);
         scrollingLog.setContent(log);
 
-        addEvent("Starting Game");
-
-        addTurn("Player1");
+        addEvent("Game has started!");
     }
 
     public void addTurn(String player) {
