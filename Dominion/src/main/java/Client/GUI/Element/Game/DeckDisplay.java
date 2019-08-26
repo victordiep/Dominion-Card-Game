@@ -9,6 +9,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
+import static Constant.GuiSettings.GameScreen.GAME_CARD_HEIGHT;
+import static Constant.GuiSettings.GameScreen.GAME_CARD_WIDTH;
+
 public class DeckDisplay extends StackPane {
     private StackPane numberOfCardsOverlay;
     private int numberOfCards;
@@ -18,8 +21,8 @@ public class DeckDisplay extends StackPane {
     public DeckDisplay(final int numberOfCards) {
         Image cardBack = new Image("/CardArts/CardBack/Card_Back.png");
         ImageView deckArt = new ImageView(cardBack);
-        deckArt.setFitWidth(75);
-        deckArt.setFitHeight(119.25);
+        deckArt.setFitWidth(GAME_CARD_WIDTH);
+        deckArt.setFitHeight(GAME_CARD_HEIGHT);
 
         this.numberOfCards = numberOfCards;
 

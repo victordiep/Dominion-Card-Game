@@ -62,6 +62,12 @@ public class Player {
     public final int getDiscardSize() { return discard.size(); }
 
     public final List<Card> getHand() { return hand; }
+    public final String peekDiscard() {
+        if (discard.peek() == null)
+            return null;
+        else
+            return discard.peek().getName();
+    }
 
     public void addActions(int num) { actions = actions + num; }
     public void addBuys(int num) { actions = buys + num; }

@@ -46,7 +46,7 @@ public class CardPile {
         if (!isEmpty())
             return cards.get(size() - 1);
         else
-            throw new EmptyStackException();
+            return null;
     }
 
     public void shuffle() {

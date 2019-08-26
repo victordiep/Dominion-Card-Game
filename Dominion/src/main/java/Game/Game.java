@@ -142,6 +142,14 @@ public class Game {
     }
 
     /*
+     * DISCARD
+     */
+    public String peekDiscard() {
+        return player.peekDiscard();
+    }
+
+
+    /*
      * TURN
      */
     public static void switchToInactive() { turnPhase = TurnPhase.INACTIVE; }
