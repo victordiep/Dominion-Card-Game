@@ -39,10 +39,16 @@ public class Game {
         cardFactory = new CardFactory(this);
 
         supply = new HashMap<>();
-        populateSupply(supply);
         trash = new ArrayList<>();
 
         turnPhase = TurnPhase.WAITING;
+
+        setupGame();
+    }
+
+    private void setupGame() {
+        populateSupply(supply);
+        distributeStartingCards();
     }
 
     public void populateSupply(Map<String, SupplyPile> supply) {
@@ -57,12 +63,12 @@ public class Game {
          * BASIC CARDS
          */
         // Treasure CardPile
-        supply.put("Copper", new SupplyPile(createCard("Copper"), NUMBER_OF_COPPER - (numOfPlayers * 7))); // Every players starts with 7 Copper
+        supply.put("Copper", new SupplyPile(createCard("Copper"), NUMBER_OF_COPPER)); // Every players starts with 7 Copper
         supply.put("Silver", new SupplyPile(createCard("Silver"), NUMBER_OF_SILVER));
         supply.put("Gold", new SupplyPile(createCard("Gold"), NUMBER_OF_GOLD));
 
         // Victory CardPile
-        supply.put("Estate", new SupplyPile(createCard("Estate"), NUMBER_OF_ESTATE - (numOfPlayers * 3))); // Every players starts with 3 Estate
+        supply.put("Estate", new SupplyPile(createCard("Estate"), NUMBER_OF_ESTATE)); // Every players starts with 3 Estate
         supply.put("Duchy", new SupplyPile(createCard("Duchy"), NUMBER_OF_DUCHY));
         supply.put("Province", new SupplyPile(createCard("Province"), NUMBER_OF_PROVINCE));
 
@@ -70,12 +76,39 @@ public class Game {
         supply.put("Curse", new SupplyPile(createCard("Curse"), NUMBER_OF_CURSE));
     }
 
-    public int getStock(String name) {
+    private void distributeStartingCards() {
+        // Each player starts with 7 copper and 3 estates, so we need to reduce the stock
+        supply.get("Copper").reduceStock(numOfPlayers * 7);
+        supply.get("Estate").reduceStock(numOfPlayers * 3);
+
+        for (int i = 0; i < 7; i++) {
+            player.addCardIntoDeck(cardFactory.createCard("Copper"));
+        }
+
+        for (int i = 0; i < 3; i++) {
+            player.addCardIntoDeck(cardFactory.createCard("Estate"));
+        }
+
+        player.shuffleDeck();
+        player.drawCards(HAND_SIZE);
+    }
+
+    public final int getStock(String name) {
         return supply.get(name).getStock();
     }
 
-    public int getDeckSize() {
+    public final int getDeckSize() {
         return player.getDeckSize();
+    }
+
+    public final List<String> getHandAsString() {
+        List<String> cardNames = new ArrayList<>();
+
+        for (Card card : player.getHand()) {
+            cardNames.add(card.getName());
+        }
+
+        return cardNames;
     }
 
     public int getDiscardSize() {

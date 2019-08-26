@@ -26,6 +26,10 @@ public class SupplyPile {
         stock = stock + num;
     }
 
+    public Card getCard() {
+        return card.makeCopy();
+    }
+
     public Card take() {
         if (!isEmpty()) {
             stock--;
@@ -33,6 +37,13 @@ public class SupplyPile {
         }
         else
             throw new EmptyStackException();
+    }
+
+    public void reduceStock(int num) {
+        if (num <= stock)
+            stock = stock - num;
+        else
+            stock = 0;
     }
 
     public boolean isEmpty() {

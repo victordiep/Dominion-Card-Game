@@ -124,7 +124,7 @@ public class DominionManager extends Application {
 
             switchToScreen(new CardSelectPane());
         } catch (IOException e) {
-            e.printStackTrace();
+
         }
     }
 

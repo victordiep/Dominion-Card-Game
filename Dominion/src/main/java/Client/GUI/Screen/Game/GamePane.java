@@ -42,6 +42,8 @@ public class GamePane extends BorderPane implements SceneState {
         this.playerNames = new ArrayList<>(playerNames);
 
         setup();
+        setMouseTransparent(true);
+        setFocusTraversable(false);
     }
 
     /*
@@ -161,6 +163,7 @@ public class GamePane extends BorderPane implements SceneState {
 
         // HandDisplay
         handDisplay = new HandDisplay();
+        handDisplay.addCards(game.getHandAsString());
 
         makeHandInteractable();
 
@@ -246,7 +249,7 @@ public class GamePane extends BorderPane implements SceneState {
     }
 
     private void makeHandInteractable() {
-        for (Node card: handDisplay.getChildren()) {
+        for (Node card: handDisplay.getCardArts()) {
             card.setOnMouseEntered(e -> {
                 setCardArt((ImageView) card);
             });

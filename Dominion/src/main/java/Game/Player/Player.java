@@ -9,6 +9,7 @@ import Game.Card.CardPile;
 import Game.Game;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /*
@@ -26,7 +27,7 @@ public class Player {
     private int buys;
 
     // Card collections
-    private ArrayList<Card> hand; //
+    private ArrayList<Card> hand; // Represents the hand
     private CardPile deck; // Represents the deck
     private CardPile inPlay; // Represents the cards that were played during the turn
     private CardPile discard; // Represents the discard pile
@@ -52,6 +53,8 @@ public class Player {
 
     public final int getDeckSize() { return deck.size(); }
     public final int getDiscardSize() { return discard.size(); }
+
+    public final List<Card> getHand() { return hand; }
 
     public void addActions(int num) { actions = actions + num; }
     public void addBuys(int num) { actions = buys + num; }
@@ -80,6 +83,11 @@ public class Player {
     public void putCardIntoPlay(Card card) {
         inPlay.push(card);
         hand.remove(card);
+    }
+
+    // Called at the end of the player's turn
+    public void addCardIntoDeck(Card card) {
+        deck.push(card);
     }
 
     // Called at the end of the game to count Victory Points
