@@ -5,7 +5,7 @@ import Game.Card.Effect.Effect;
 import Game.Card.Effect.Type.InstantEffect;
 
 public class DrawCardEffect extends InstantEffect {
-    private int cardsToDraw;
+    private final int cardsToDraw;
 
     public DrawCardEffect(int cardsToDraw) {
         super("Draw " + cardsToDraw + " card(s)");

@@ -5,7 +5,7 @@ import Game.Card.Effect.Effect;
 import Game.Card.Effect.Type.InstantEffect;
 
 public class GainBuyEffect extends InstantEffect {
-    private int buys;
+    private final int buys;
 
     public GainBuyEffect(int buys) {
         super("Gain " + buys + " buy(s)");

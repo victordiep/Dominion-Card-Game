@@ -4,6 +4,7 @@ import static Constant.CardSettings.DominionCards.CARD_COSTS;
 import static Constant.GuiSettings.GameSettings.*;
 
 import Client.DominionManager;
+import Constant.ActionInProgress;
 import Constant.TurnPhase;
 import Game.Card.Card;
 import Game.Card.CardFactory;
@@ -31,6 +32,7 @@ public class Game {
     private CardFactory cardFactory;
 
     private static TurnPhase turnPhase = TurnPhase.INACTIVE;
+    private static ActionInProgress actionType = ActionInProgress.NO_ACTION;
 
     public Game(List<String> kingdomCards, UUID playerId, String name, Map<UUID, String> players) {
         player = new Player(playerId, name);
@@ -53,6 +55,9 @@ public class Game {
         distributeStartingCards();
     }
 
+    /*
+     * SUPPLY
+     */
     public void populateSupply(Map<String, SupplyPile> supply) {
         /*
          * KINGDOM CARDS
@@ -98,14 +103,38 @@ public class Game {
     public final int getStock(String name) {
         return supply.get(name).getStock();
     }
+    public Card createCard(String name) {
+        return cardFactory.createCard(name);
+    }
+    public Card takeCard(String name) {
+        return supply.get(name).take();
+    }
+    public List<String> getKingdomCards() { return kingdomCards; }
 
+    /*
+     * DECK
+     */
     public final int getDeckSize() {
         return player.getDeckSize();
     }
 
+    /*
+     * DISCARD
+     */
+    public String peekDiscard() {
+        return player.peekDiscard();
+    }
     public int getDiscardSize() {
         return player.getDiscardSize();
     }
+
+    /*
+     * HAND
+     */
+    public List<Card> drawCard(int num) {
+        return player.drawCards(num);
+    }
+    public boolean playCard(String name) { return player.playCard(name); }
 
     public final List<String> getHandAsString() {
         List<String> cardNames = new ArrayList<>();
@@ -117,41 +146,15 @@ public class Game {
         return cardNames;
     }
 
+    /*
+     * PLAYER
+     */
     public UUID getPlayerId() {
         return player.getPlayerId();
     }
-
     public String getNameByPlayerId(UUID id) {
         return playerNames.get(id);
     }
-
-    public Card createCard(String name) {
-        return cardFactory.createCard(name);
-    }
-
-    public boolean isGameOver() {
-        int emptySupplyPiles = 0;
-
-        for (SupplyPile pile : supply.values()) {
-            if (pile.getStock() == 0)
-                emptySupplyPiles++;
-        }
-
-        if (supply.get("Province").getStock() == 0 || emptySupplyPiles == 3) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    /*
-     * DISCARD
-     */
-    public String peekDiscard() {
-        return player.peekDiscard();
-    }
-
 
     /*
      * TURN
@@ -171,15 +174,39 @@ public class Game {
         }
     }
 
+    public boolean isGameOver() {
+        int emptySupplyPiles = 0;
+
+        for (SupplyPile pile : supply.values()) {
+            if (pile.getStock() == 0)
+                emptySupplyPiles++;
+        }
+
+        if (supply.get("Province").getStock() == 0 || emptySupplyPiles == 3) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /*
+     * ACTION
+     */
+    public int getPlayerActions() { return player.getActions(); }
+    public void addActions(int num) { player.addActions(num); }
+
+    /*
+     * ACTION IN PROGRESS
+     */
+    public void setActionInProgress(ActionInProgress type) { actionType = type; }
+
     /*
      * BUY
      */
-    public int getPlayerActions() { return player.getActions(); }
     public int getPlayerBuys() { return player.getBuys(); }
-    public int getPlayerCoins() { return player.getCoins(); }
-
-    public void addActions(int num) { player.addActions(num); }
     public void addBuys(int num) { player.addBuys(num); }
+    public int getPlayerCoins() { return player.getCoins(); }
     public void addCoins(int num) { player.addCoins(num); }
 
     public boolean purchaseCard(String name) throws IOException {
@@ -198,18 +225,4 @@ public class Game {
 
         return false;
     }
-
-    public Card takeCard(String name) {
-        return supply.get(name).take();
-    }
-
-    public List<Card> drawCard(int num) {
-        return player.drawCards(num);
-    }
-
-    public boolean playCard(String name) {
-        return player.playCard(name);
-    }
-
-    public List<String> getKingdomCards() { return kingdomCards; }
 }

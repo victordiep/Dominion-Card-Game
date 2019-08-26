@@ -4,8 +4,7 @@ import Client.DominionManager;
 import Game.Card.Effect.Type.InstantEffect;
 
 public class GainCoinEffect extends InstantEffect {
-
-    private int coins;
+    private final int coins;
 
     public GainCoinEffect(int coins) {
         super("Gain " + coins + " coin(s)");

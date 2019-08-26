@@ -5,7 +5,7 @@ import Game.Card.Effect.Effect;
 import Game.Card.Effect.Type.InstantEffect;
 
 public class GainActionEffect extends InstantEffect {
-    private int actions;
+    private final int actions;
 
     public GainActionEffect(int actions) {
         super("Gain " + actions + " action(s)");
