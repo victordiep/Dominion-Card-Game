@@ -1,5 +1,6 @@
 package Client.GUI.Element.Game;
 
+import Client.DominionManager;
 import javafx.geometry.Pos;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -11,6 +12,8 @@ public class DiscardDisplay extends StackPane {
     private StackPane numberOfCardsOverlay;
 
     private int numberOfCards;
+
+    private Text cardCountText;
 
     public DiscardDisplay() {
         Rectangle bg = new Rectangle();
@@ -30,18 +33,23 @@ public class DiscardDisplay extends StackPane {
     private StackPane createCardCountOverlay() {
         numberOfCardsOverlay = new StackPane();
 
-        Text costText = new Text(Integer.toString(numberOfCards));
-        costText.setFill(Color.WHITE);
-        costText.setTranslateX(3);
+        cardCountText = new Text();
+        updateCardCount();
+        cardCountText.setFill(Color.WHITE);
+        cardCountText.setTranslateX(3);
 
         Rectangle bg = new Rectangle(20, 20);
         bg.setArcHeight(7.5);
         bg.setArcWidth(7.5);
         bg.setFill(Color.RED);
 
-        numberOfCardsOverlay.getChildren().addAll(bg, costText);
+        numberOfCardsOverlay.getChildren().addAll(bg, cardCountText);
         numberOfCardsOverlay.setAlignment(Pos.TOP_LEFT);
 
         return numberOfCardsOverlay;
+    }
+
+    public void updateCardCount() {
+        cardCountText.setText(Integer.toString(DominionManager.getInstance().getGame().getDiscardSize()));
     }
 }

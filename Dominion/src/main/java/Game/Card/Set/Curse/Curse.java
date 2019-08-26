@@ -2,12 +2,12 @@ package Game.Card.Set.Curse;
 
 import Game.Card.Card;
 
-import static Constant.CardSettings.DominionCards.CURSE_CARD_COSTS;
+import static Constant.CardSettings.DominionCards.CARD_COSTS;
 
 public class Curse extends Card {
 
     public Curse() {
-        super("Curse", CURSE_CARD_COSTS.get("Curse"));
+        super("Curse", CARD_COSTS.get("Curse"));
     }
 
     @Override

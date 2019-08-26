@@ -1,7 +1,6 @@
 package Game.Card;
 
 import Constant.CardType;
-import Game.Game;
 
 import java.util.HashSet;
 import java.util.Set;

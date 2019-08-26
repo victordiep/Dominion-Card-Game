@@ -2,12 +2,12 @@ package Game.Card.Set.Kingdom;
 
 import Game.Card.Card;
 
-import static Constant.CardSettings.DominionCards.KINGDOM_CARD_COSTS;
+import static Constant.CardSettings.DominionCards.CARD_COSTS;
 
 public class Festival extends Card {
 
     public Festival() {
-        super("Festival", KINGDOM_CARD_COSTS.get("Festival"));
+        super("Festival", CARD_COSTS.get("Festival"));
     }
 
     @Override

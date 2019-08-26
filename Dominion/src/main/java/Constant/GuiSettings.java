@@ -139,6 +139,7 @@ public class GuiSettings {
         public static final int HAND_SIZE = 5;
         public static final int NUMBER_OF_ACTIONS = 1;
         public static final int NUMBER_OF_BUYS = 1;
+        public static final int NUMBER_OF_COINS = 0;
 
         /*
          * SUPPLY

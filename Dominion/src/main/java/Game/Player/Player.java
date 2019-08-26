@@ -25,6 +25,7 @@ public class Player {
     // Game turn
     private int actions;
     private int buys;
+    private int coins;
 
     // Card collections
     private ArrayList<Card> hand; // Represents the hand
@@ -38,6 +39,7 @@ public class Player {
 
         actions = NUMBER_OF_ACTIONS;
         buys = NUMBER_OF_BUYS;
+        coins = NUMBER_OF_COINS;
 
         hand = new ArrayList<>();
         deck = new CardPile();
@@ -50,6 +52,11 @@ public class Player {
 
     public final int getActions() { return actions; }
     public final int getBuys() { return buys; }
+    public final int getCoins() { return coins; }
+
+    public final void spendCoins(int cost) { coins = coins - cost; }
+    public final void spendAction(int cost) { actions--; }
+    public final void spendBuys(int cost) { buys--; }
 
     public final int getDeckSize() { return deck.size(); }
     public final int getDiscardSize() { return discard.size(); }
@@ -145,5 +152,12 @@ public class Player {
             System.out.println("Can't play card: " + name);
 
         return result;
+    }
+
+    public void endTurn() {
+        putCardsInPlayIntoDiscard();
+        putHandIntoDiscard();
+
+        drawCards(HAND_SIZE);
     }
 }

@@ -2,12 +2,12 @@ package Game.Card.Set.Kingdom;
 
 import Game.Card.Card;
 
-import static Constant.CardSettings.DominionCards.KINGDOM_CARD_COSTS;
+import static Constant.CardSettings.DominionCards.CARD_COSTS;
 
 public class Merchant extends Card {
 
     public Merchant() {
-        super("Merchant", KINGDOM_CARD_COSTS.get("Merchant"));
+        super("Merchant", CARD_COSTS.get("Merchant"));
     }
 
     @Override

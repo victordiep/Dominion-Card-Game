@@ -1,20 +1,35 @@
 package Client.GUI.Element.Game;
 
+import Client.DominionManager;
+import Client.GUI.Screen.Game.GamePane;
+import Game.Game;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
-public class GameDetails extends StackPane {
-    private HBox turnDetails;
-    private HBox currentAction;
+import java.io.IOException;
 
-    public GameDetails() {
+public class GameDetails extends StackPane {
+    private GamePane gamePane;
+
+    private HBox turnDetails;
+    private HBox currentStatus;
+
+    private Text action;
+    private Text buy;
+    private Text coins;
+
+    private Text status;
+
+    private Button endAction;
+    private Button endTurn;
+
+    public GameDetails(GamePane pane) {
+        this.gamePane = pane;
+
         setPadding(new Insets(0, 10, 0, 10));
 
         Rectangle bg = new Rectangle(565, 60);
@@ -40,7 +55,7 @@ public class GameDetails extends StackPane {
     private VBox createDetails() {
         VBox details = new VBox();
 
-        details.getChildren().addAll(createTurnDetails(), createActionDetails());
+        details.getChildren().addAll(createTurnDetails(), createStatusDetails());
 
         return details;
     }
@@ -49,11 +64,14 @@ public class GameDetails extends StackPane {
         turnDetails = new HBox();
         turnDetails.setSpacing(20);
 
-        Text action = new Text("1 Action");
+        action = new Text();
+        updateActions();
         action.setFill(Color.WHITE);
-        Text buy = new Text("1 Buy");
+        buy = new Text();
+        updateBuys();
         buy.setFill(Color.WHITE);
-        Text coins = new Text("0 Coin");
+        coins = new Text();
+        updateCoins();
         coins.setFill(Color.WHITE);
 
         turnDetails.getChildren().addAll(action, buy, coins);
@@ -61,35 +79,45 @@ public class GameDetails extends StackPane {
         return turnDetails;
     }
 
-    private HBox createActionDetails() {
-        currentAction = new HBox();
+    private HBox createStatusDetails() {
+        currentStatus = new HBox();
 
-        Text action = new Text("Waiting for your turn...");
-        action.setFill(Color.PALETURQUOISE);
+        status = new Text("Waiting for your turn...");
+        status.setFill(Color.PALETURQUOISE);
 
-        currentAction.getChildren().add(action);
+        currentStatus.getChildren().add(status);
 
-        return currentAction;
+        return currentStatus;
     }
 
     private VBox createEndTurn() {
         VBox buttons = new VBox();
         buttons.setSpacing(5);
 
-        Button endTurn = new Button("End Turn");
+        endTurn = new Button("End Turn");
         endTurn.setStyle("-fx-text-fill: white; -fx-background: black; -fx-background-color: indianred");
         endTurn.setDisable(true);
 
-        Button endAction = new Button("End Action");
+        endAction = new Button("End Action");
         endAction.setStyle("-fx-text-fill: black; -fx-background: black; -fx-background-color: turquoise");
         endAction.setDisable(true);
 
         endTurn.setOnMousePressed(e -> {
+            setStatusDetails("Waiting for your turn...");
+            try {
+                gamePane.setEndTurn();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
 
+            endTurn.setDisable(true);
         });
 
         endAction.setOnMousePressed(e -> {
-
+            setStatusDetails("Buy Phase");
+            Game.switchToBuyPhase();
+            endAction.setDisable(true);
+            endTurn.setDisable(false);
         });
 
         buttons.getChildren().addAll(endTurn, endAction);
@@ -97,31 +125,23 @@ public class GameDetails extends StackPane {
         return buttons;
     }
 
-    public void setActions(int numOfActions) {
-        Text action = new Text(numOfActions + " Action");
-        action.setFill(Color.WHITE);
-
-        currentAction.getChildren().set(0, action);
+    public void updateActions() {
+        action.setText(DominionManager.getInstance().getGame().getPlayerActions() + " Action");
     }
 
-    public void setBuys(int numOfBuys) {
-        Text buy = new Text(numOfBuys + " Buy");
-        buy.setFill(Color.WHITE);
-
-        currentAction.getChildren().set(0, buy);
+    public void updateBuys() {
+        buy.setText(DominionManager.getInstance().getGame().getPlayerBuys() + " Buy");
     }
 
-    public void setCoins(int numOfCoins) {
-        Text coins = new Text(numOfCoins + " Coin");
-        coins.setFill(Color.WHITE);
-
-        currentAction.getChildren().set(0, coins);
+    public void updateCoins() {
+        coins.setText(DominionManager.getInstance().getGame().getPlayerCoins() + " Coin");
     }
 
-    public void setActionDetails(String actionDetails) {
-        Text action = new Text(actionDetails);
-        action.setFill(Color.PALETURQUOISE);
+    public void setStatusDetails(String statusDetails) {
+        status.setText(statusDetails);
+    }
 
-        currentAction.getChildren().set(0, action);
+    public void enableAction() {
+        endAction.setDisable(false);
     }
 }

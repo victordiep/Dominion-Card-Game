@@ -2,12 +2,12 @@ package Game.Card.Set.Kingdom;
 
 import Game.Card.Card;
 
-import static Constant.CardSettings.DominionCards.KINGDOM_CARD_COSTS;
+import static Constant.CardSettings.DominionCards.CARD_COSTS;
 
 public class Mine extends Card {
 
     public Mine() {
-        super("Mine", KINGDOM_CARD_COSTS.get("Mine"));
+        super("Mine", CARD_COSTS.get("Mine"));
     }
 
     @Override

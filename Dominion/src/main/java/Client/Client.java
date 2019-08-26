@@ -43,6 +43,8 @@ public class Client implements Runnable {
 
     private Map<UUID, String> playerList;
 
+    private GamePane gamePane = null;
+
     public Client() {
         isRunningLock = new Object();
         inLobbyLock = new Object();
@@ -60,11 +62,10 @@ public class Client implements Runnable {
         hostPort = config.getHostPort();
     }
 
-    public UUID getPlayerId() { return playerId; }
-    public String getUsername() { return username; }
-    public int getPlayerListSize() { return playerList.size(); }
-    public List<String> getPlayers() { return new LinkedList<>(playerList.values()); }
-    public List<UUID> getPlayerIds() { return new LinkedList<>(playerList.keySet()); }
+    public final UUID getPlayerId() { return playerId; }
+    public final String getUsername() { return username; }
+    public final int getPlayerListSize() { return playerList.size(); }
+    public final Map<UUID, String> getPlayers() { return playerList; }
 
     @Override
     public void run() {
@@ -174,7 +175,14 @@ public class Client implements Runnable {
         else if (messageType == Packet.Type.START_GAME) {
             setIfInLobby(false);
             setIfInGame(true);
-            DominionManager.getInstance().switchToScreen(new GamePane(DominionManager.getInstance().getGame(), getPlayers()));
+            gamePane = new GamePane(DominionManager.getInstance().getGame(), new ArrayList<>(getPlayers().values()));
+            DominionManager.getInstance().switchToScreen(gamePane);
+        }
+        else if (messageType == Packet.Type.SELECT_TURN) {
+            Platform.runLater(() -> gamePane.updatePlayerTurn(message.getMessage(0)));
+        }
+        else if (messageType == Packet.Type.SELECT_TURN) {
+            Platform.runLater(() -> gamePane.updatePlayerTurn(message.getMessage(0)));
         }
 
         finish();
@@ -187,7 +195,7 @@ public class Client implements Runnable {
         }
     }
 
-    public synchronized void send(Packet message) throws IllegalArgumentException, IOException{
+    public void send(Packet message) throws IllegalArgumentException, IOException{
         out.reset();
         out.writeObject(message);
         out.flush();

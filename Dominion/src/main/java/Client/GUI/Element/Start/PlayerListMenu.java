@@ -45,7 +45,7 @@ public class PlayerListMenu extends BorderPane {
     public synchronized static void updatePlayerLobby() {
         players.getChildren().clear();
 
-        for (String name : DominionManager.getInstance().getPlayers()) {
+        for (String name : DominionManager.getInstance().getPlayerNames()) {
             PlayerTag playerName = new PlayerTag(name);
             players.getChildren().add(playerName);
         }

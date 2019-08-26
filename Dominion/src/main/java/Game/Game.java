@@ -14,8 +14,7 @@ import java.util.*;
 public class Game {
 
     private Player player;
-    private final List<UUID> playerIds;
-    private final List<String> playerNames;
+    private final Map<UUID, String> playerNames;
     private final int numOfPlayers;
 
     private final List<String> kingdomCards;
@@ -29,11 +28,10 @@ public class Game {
 
     private static TurnPhase turnPhase = TurnPhase.INACTIVE;
 
-    public Game(List<String> kingdomCards, UUID playerId, String name, List<UUID> playerIds, List<String> playerNames) {
-        this.player = new Player(playerId, name);
-        this.playerNames = new ArrayList<>(playerNames);
-        this.playerIds = new ArrayList<>(playerIds);
-        this.numOfPlayers = this.playerNames.size();
+    public Game(List<String> kingdomCards, UUID playerId, String name, Map<UUID, String> players) {
+        player = new Player(playerId, name);
+        this.playerNames = new HashMap<>(players);
+        numOfPlayers = this.playerNames.size();
 
         this.kingdomCards = new ArrayList<>(kingdomCards);
         cardFactory = new CardFactory(this);
@@ -101,6 +99,10 @@ public class Game {
         return player.getDeckSize();
     }
 
+    public int getDiscardSize() {
+        return player.getDiscardSize();
+    }
+
     public final List<String> getHandAsString() {
         List<String> cardNames = new ArrayList<>();
 
@@ -111,12 +113,32 @@ public class Game {
         return cardNames;
     }
 
-    public int getDiscardSize() {
-        return player.getDiscardSize();
+    public UUID getPlayerId() {
+        return player.getPlayerId();
+    }
+
+    public String getNameByPlayerId(UUID id) {
+        return playerNames.get(id);
     }
 
     public Card createCard(String name) {
         return cardFactory.createCard(name);
+    }
+
+    public boolean isGameOver() {
+        int emptySupplyPiles = 0;
+
+        for (SupplyPile pile : supply.values()) {
+            if (pile.getStock() == 0)
+                emptySupplyPiles++;
+        }
+
+        if (supply.get("Province").getStock() == 0 || emptySupplyPiles == 3) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     /*
@@ -129,9 +151,25 @@ public class Game {
     public static void switchToGameOver() { turnPhase = TurnPhase.GAME_OVER; }
     public static TurnPhase getTurnPhase() { return turnPhase; }
 
+    public void endTurn() {
+        if (getTurnPhase() == TurnPhase.BUY) {
+            switchToWaitingPhase();
+
+            player.endTurn();
+        }
+    }
+
     /*
      * BUY
      */
+    public int getPlayerActions() { return player.getActions(); }
+    public int getPlayerBuys() { return player.getBuys(); }
+    public int getPlayerCoins() { return player.getCoins(); }
+
+    public boolean purchaseCard(String name) {
+        return false;
+    }
+
     public Card takeCard(String name) {
         return supply.get(name).take();
     }

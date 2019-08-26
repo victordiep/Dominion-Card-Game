@@ -2,12 +2,12 @@ package Game.Card.Set.Kingdom;
 
 import Game.Card.Card;
 
-import static Constant.CardSettings.DominionCards.KINGDOM_CARD_COSTS;
+import static Constant.CardSettings.DominionCards.CARD_COSTS;
 
 public class Smithy extends Card {
 
     public Smithy() {
-        super("Smithy", KINGDOM_CARD_COSTS.get("Smithy"));
+        super("Smithy", CARD_COSTS.get("Smithy"));
     }
 
     @Override

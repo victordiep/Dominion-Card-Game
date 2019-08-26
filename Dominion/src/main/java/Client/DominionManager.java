@@ -142,8 +142,8 @@ public class DominionManager extends Application {
         }
     }
 
-    public synchronized List<String> getPlayers() {
-        return client.getPlayers();
+    public synchronized List<String> getPlayerNames() {
+        return new ArrayList<>(client.getPlayers().values());
     }
     public synchronized int getNumOfPlayers() {
         return client.getPlayerListSize();
@@ -160,7 +160,7 @@ public class DominionManager extends Application {
     }
 
     public synchronized void createGame(List<String> kingdomCards) {
-        game = new Game(kingdomCards, client.getPlayerId(), client.getUsername(), client.getPlayerIds(), client.getPlayers());
+        game = new Game(kingdomCards, client.getPlayerId(), client.getUsername(), client.getPlayers());
     }
 
     public synchronized Game getGame() {
@@ -169,6 +169,10 @@ public class DominionManager extends Application {
 
     public void processEvent() {
         //client.process()
+    }
+
+    public void sendEvent(Packet message) throws IOException {
+        client.send(message);
     }
 
     public static void main(String[] args) {

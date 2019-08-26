@@ -5,10 +5,13 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import Client.DominionManager;
+import Client.GUI.Element.Start.PlayerListMenu;
 import Client.GUI.Screen.SceneState;
+import javafx.application.Platform;
 import protobuf.PacketProtos.Packet;
 
 public class Server implements Runnable {
@@ -25,6 +28,8 @@ public class Server implements Runnable {
     private final Object inLobbyLock;
     private boolean inGame = false; // Keeps track of whether the game has started
     private final Object inGameLock;
+    private boolean isProcessing = false; // Keeps track of whether the game has started
+    private final Object isProcessingLock;
 
     private List<Packet> packetQueue;
 
@@ -32,6 +37,7 @@ public class Server implements Runnable {
         this.isRunningLock = new Object();
         this.inLobbyLock = new Object();
         this.inGameLock = new Object();
+        this.isProcessingLock = new Object();
 
         this.packetQueue = new ArrayList<>();
     }
@@ -82,16 +88,63 @@ public class Server implements Runnable {
 
                 setIfInLobby(false);
                 setIfInGame(true);
-                /*
-                 * TODO: Start game logic
-                 */
+
+                lobby.establishPlayerOrder();
+
+                broadcast(Packet.newBuilder()
+                        .setUUID("SERVER")
+                        .setType(Packet.Type.SELECT_TURN)
+                        .addMessage(lobby.getCurrentPlayerTurn().toString())
+                        .build());
+
+                while (checkIfInGame()) {
+                    if (!packetQueue.isEmpty()) {
+                        synchronized(isProcessingLock){
+                            while(isProcessing){
+                                try {
+                                    isProcessingLock.wait();
+                                } catch (InterruptedException e) {
+                                    isProcessing = false;
+                                }
+                            }
+                            isProcessing = true;
+                        }
+
+                        process(readPacket());
+                    }
+                }
             }
         } catch (IOException e) {
 
         }
     }
 
-    // Handles incoming connections from clients
+    public void process(Packet message) throws IOException {
+        synchronized (isProcessingLock) {
+            isProcessing = true;
+        }
+
+        Packet.Type messageType = message.getType();
+
+        if (messageType == Packet.Type.END_TURN) {
+            broadcast(Packet.newBuilder()
+                    .setUUID("SERVER")
+                    .setType(Packet.Type.SELECT_TURN)
+                    .addMessage(lobby.getCurrentPlayerTurn().toString())
+                    .build());
+        }
+
+        finish();
+    }
+
+    public void finish () {
+        synchronized (isProcessingLock) {
+            isProcessing = false;
+            isProcessingLock.notifyAll();
+        }
+    }
+
+        // Handles incoming connections from clients
     private void accept() throws IOException {
         setIfRunning(true);
 

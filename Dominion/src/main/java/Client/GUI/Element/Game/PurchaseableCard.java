@@ -1,6 +1,9 @@
 package Client.GUI.Element.Game;
 
 import Client.GUI.Element.Card.CardArt;
+import Constant.TurnPhase;
+import Game.Game;
+
 import javafx.geometry.Pos;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -9,7 +12,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 import static Constant.CardSettings.DominionCards.*;
-import static Constant.GuiSettings.GameSettings.KINGDOM_CARD_PILE_SIZE;
 
 public class PurchaseableCard extends StackPane {
     private ImageView cardArt;
@@ -20,24 +22,14 @@ public class PurchaseableCard extends StackPane {
 
     public PurchaseableCard(String cardName, int stock, double width, double height) {
         cardArt = new CardArt(cardName, width, height);
-
-        if (KINGDOM_CARD_COSTS.containsKey(cardName))
-            cardCost = KINGDOM_CARD_COSTS.get(cardName);
-        else if (TREASURE_CARD_COSTS.containsKey(cardName))
-            cardCost = TREASURE_CARD_COSTS.get(cardName);
-        else if (VICTORY_CARD_COSTS.containsKey(cardName))
-            cardCost = VICTORY_CARD_COSTS.get(cardName);
-        else if (CURSE_CARD_COSTS.containsKey(cardName))
-            cardCost = CURSE_CARD_COSTS.get(cardName);
+        cardCost = CARD_COSTS.getOrDefault(cardName, -1);
 
         numberInStock = stock;
 
         getChildren().add(cardArt);
         getChildren().add(createStockOverlay());
 
-        setOnMousePressed(e -> {
-            PurchaseCard();
-        });
+        setOnMousePressed(e -> PurchaseCard());
     }
 
     public ImageView getCardArt(){
@@ -63,9 +55,11 @@ public class PurchaseableCard extends StackPane {
     }
 
     public void PurchaseCard() {
-        if (numberInStock > 0) {
-            numberInStock--;
-            getChildren().set(1, createStockOverlay());
+        if (Game.getTurnPhase() == TurnPhase.BUY) {
+            if (numberInStock > 0) {
+                numberInStock--;
+                getChildren().set(1, createStockOverlay());
+            }
         }
     }
 }

@@ -26,7 +26,9 @@ public class HandDisplay extends ScrollPane {
 
     public final List<CardArt> getCardArts() { return cardArts; }
 
-    public void addCards(List<String> cardNames) {
+    public void updateCards(List<String> cardNames) {
+        setContent(null);
+
         int cardIndex  = 0;
         int numOfCards = cardNames.size();
         int numOfRows  = (int) Math.ceil((double)numOfCards / CARDS_PER_ROW);

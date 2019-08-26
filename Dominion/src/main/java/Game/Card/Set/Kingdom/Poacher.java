@@ -2,12 +2,12 @@ package Game.Card.Set.Kingdom;
 
 import Game.Card.Card;
 
-import static Constant.CardSettings.DominionCards.KINGDOM_CARD_COSTS;
+import static Constant.CardSettings.DominionCards.CARD_COSTS;
 
 public class Poacher extends Card {
 
     public Poacher() {
-        super("Poacher", KINGDOM_CARD_COSTS.get("Poacher"));
+        super("Poacher", CARD_COSTS.get("Poacher"));
     }
 
     @Override

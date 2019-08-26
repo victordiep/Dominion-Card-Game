@@ -2,12 +2,12 @@ package Game.Card.Set.Victory;
 
 import Game.Card.Card;
 
-import static Constant.CardSettings.DominionCards.VICTORY_CARD_COSTS;
+import static Constant.CardSettings.DominionCards.CARD_COSTS;
 
 public class Duchy extends Card {
 
     public Duchy() {
-        super("Duchy", VICTORY_CARD_COSTS.get("Duchy"));
+        super("Duchy", CARD_COSTS.get("Duchy"));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package Client.GUI.Screen.Game;
 
+import Client.DominionManager;
 import Client.GUI.Element.Background;
 import Client.GUI.Element.Game.*;
 import Client.GUI.Element.Misc.PlayerTag;
@@ -9,19 +10,24 @@ import static Constant.GuiSettings.GameScreen.*;
 import Client.GUI.Screen.SceneState;
 import Game.Game;
 
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import protobuf.PacketProtos.Packet;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class GamePane extends BorderPane implements SceneState {
 
@@ -32,18 +38,21 @@ public class GamePane extends BorderPane implements SceneState {
 
     private HBox kingdomCardDisplay;
     private VBox basicCardDisplay;
-    private HBox deckDisplay;
 
     private GameDetails turnDetails;
+    private Log log;
+    private TrashPile trash;
     private HandDisplay handDisplay;
+    private DeckDisplay deckDisplay;
+    private DiscardDisplay discardDisplay;
+
+    EventHandler<MouseEvent> handler = MouseEvent::consume;
 
     public GamePane(Game game, List<String> playerNames) {
         this.game = game;
         this.playerNames = new ArrayList<>(playerNames);
 
         setup();
-        setMouseTransparent(true);
-        setFocusTraversable(false);
     }
 
     /*
@@ -68,12 +77,12 @@ public class GamePane extends BorderPane implements SceneState {
         basicCardDisplay.setSpacing(5);
         basicCardDisplay.setPadding(new Insets(10, 10, 10, 10));
 
-        deckDisplay = createDeckAndDiscard();
-        deckDisplay.setSpacing(5);
-        deckDisplay.setPadding(new Insets(0, 10, 10, 10));
+        HBox deck = createDeckAndDiscard();
+        deck.setSpacing(5);
+        deck.setPadding(new Insets(0, 10, 10, 10));
 
         leftMenuContainer.setTop(basicCardDisplay);
-        leftMenuContainer.setBottom(deckDisplay);
+        leftMenuContainer.setBottom(deck);
         leftMenu.getChildren().addAll(bg, leftMenuContainer);
         leftPane.getChildren().add(leftMenu);
     }
@@ -122,10 +131,10 @@ public class GamePane extends BorderPane implements SceneState {
     private HBox createDeckAndDiscard() {
         HBox deckAndDiscard = new HBox();
 
-        DeckDisplay deckDisplay = new DeckDisplay(game.getDeckSize());
-        DiscardDisplay discardPileDisplay = new DiscardDisplay();
+        deckDisplay = new DeckDisplay(game.getDeckSize());
+        discardDisplay = new DiscardDisplay();
 
-        deckAndDiscard.getChildren().addAll(deckDisplay, discardPileDisplay);
+        deckAndDiscard.getChildren().addAll(deckDisplay, discardDisplay);
 
         return deckAndDiscard;
     }
@@ -159,11 +168,11 @@ public class GamePane extends BorderPane implements SceneState {
         kingdomCardDisplay.getChildren().addAll(kingdomCards, hoveredCard);
 
         // Turn Information
-        turnDetails = new GameDetails();
+        turnDetails = new GameDetails(this);
 
         // HandDisplay
         handDisplay = new HandDisplay();
-        handDisplay.addCards(game.getHandAsString());
+        handDisplay.updateCards(game.getHandAsString());
 
         makeHandInteractable();
 
@@ -232,8 +241,8 @@ public class GamePane extends BorderPane implements SceneState {
         rightPane.getStyleClass().add("floating");
         rightPane.setStyle("-fx-background: transparent; -fx-background-color: rgba(0, 0, 0, 0.8)");
 
-        Log log = new Log();
-        TrashPile trash = new TrashPile();
+        log = new Log();
+        trash = new TrashPile();
 
         rightPane.getTabs().addAll(log, trash);
     }
@@ -278,5 +287,39 @@ public class GamePane extends BorderPane implements SceneState {
         setLeft(leftPane);
         setRight(rightPane);
         setCenter(centerPane);
+    }
+
+    public void updatePlayerTurn(String id) {
+        if (id.equals(game.getPlayerId().toString())) {
+            setActiveTurn();
+        }
+        else {
+            log.addEvent("It's " + game.getNameByPlayerId(UUID.fromString(id)) + "'s turn");
+
+            addEventFilter(MouseEvent.MOUSE_PRESSED, handler);
+        }
+    }
+
+    public void setActiveTurn() {
+        Game.switchToActionPhase();
+        log.addEvent("It's your turn!");
+        turnDetails.setStatusDetails("Action Phase");
+        turnDetails.enableAction();
+
+        removeEventFilter(MouseEvent.MOUSE_PRESSED, handler);
+    }
+
+    public void setEndTurn() throws IOException {
+        game.endTurn();
+        addEventFilter(MouseEvent.MOUSE_PRESSED, handler);
+
+        DominionManager.getInstance().sendEvent(Packet.newBuilder()
+                                                    .setUUID(game.getPlayerId().toString())
+                                                    .setType(Packet.Type.END_TURN)
+                                                    .build());
+
+        handDisplay.updateCards(game.getHandAsString());
+        deckDisplay.updateCardCount();
+        discardDisplay.updateCardCount();
     }
 }

@@ -15,9 +15,13 @@ public class Lobby {
     private final Map<UUID, ConnectionDetails> clients;
     private final int maxNumOfPlayers; //max number of clients that may be added
 
+    private final List<UUID> turnOrder;
+    private int currentTurn = 0;
+
     public Lobby(Server server, int maxLobbySize){
         this.server = server;
         this.clients = Collections.synchronizedMap(new LinkedHashMap<UUID, ConnectionDetails>());
+        this.turnOrder = Collections.synchronizedList(new ArrayList<>());
         this.maxNumOfPlayers = maxLobbySize;
     }
 
@@ -48,6 +52,21 @@ public class Lobby {
             return clients.remove(playerId);
         else
             return null;
+    }
+
+    public synchronized void establishPlayerOrder() {
+        turnOrder.addAll(clients.keySet());
+        Collections.shuffle(turnOrder);
+    }
+
+    public synchronized UUID getCurrentPlayerTurn() {
+        UUID currentPlayer = turnOrder.get(currentTurn);
+
+        if (++currentTurn == clients.size()) {
+            currentTurn = 0;
+        }
+
+        return currentPlayer;
     }
 
     public synchronized void queuePacketToProcess(Packet message){
