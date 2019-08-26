@@ -54,9 +54,9 @@ public class Player {
     public final int getBuys() { return buys; }
     public final int getCoins() { return coins; }
 
-    public final void spendCoins(int cost) { coins = coins - cost; }
-    public final void spendAction(int cost) { actions--; }
-    public final void spendBuys(int cost) { buys--; }
+    public void spendCoins(int cost) { coins = coins - cost; }
+    public void useAction() { actions--; }
+    public void useBuy() { buys--; }
 
     public final int getDeckSize() { return deck.size(); }
     public final int getDiscardSize() { return discard.size(); }
@@ -96,6 +96,11 @@ public class Player {
     public void putCardIntoPlay(Card card) {
         inPlay.push(card);
         hand.remove(card);
+    }
+
+    // Called at the end of the player's turn
+    public void putCardIntoDiscard(Card card) {
+        discard.push(card);
     }
 
     // Called at the end of the player's turn
@@ -160,10 +165,22 @@ public class Player {
         return result;
     }
 
+    public void buyCard(Card card) {
+        if (coins >= card.getCost()){
+            spendCoins(card.getCost());
+            useBuy();
+            putCardIntoDiscard(card);
+        }
+    }
+
     public void endTurn() {
         putCardsInPlayIntoDiscard();
         putHandIntoDiscard();
 
         drawCards(HAND_SIZE);
+
+        actions = NUMBER_OF_ACTIONS;
+        buys = NUMBER_OF_BUYS;
+        coins = NUMBER_OF_COINS;
     }
 }

@@ -18,8 +18,8 @@ public class DiscardDisplay extends StackPane {
 
     private int numberOfCards;
 
-    private Text cardCountText;
-    private ImageView discardArt;
+    private static Text cardCountText;
+    private static ImageView discardArt;
 
     public DiscardDisplay() {
         discardArt = new ImageView();
@@ -59,7 +59,7 @@ public class DiscardDisplay extends StackPane {
         return numberOfCardsOverlay;
     }
 
-    public void updateArt() {
+    public static void updateArt() {
         String topCardOnDiscard = DominionManager.getInstance().getGame().peekDiscard();
 
         if (topCardOnDiscard == null) {
@@ -84,7 +84,7 @@ public class DiscardDisplay extends StackPane {
         }
     }
 
-    public void updateCardCount() {
+    public static void updateCardCount() {
         cardCountText.setText(Integer.toString(DominionManager.getInstance().getGame().getDiscardSize()));
         updateArt();
     }

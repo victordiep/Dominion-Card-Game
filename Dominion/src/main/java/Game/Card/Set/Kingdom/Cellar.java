@@ -16,6 +16,6 @@ public class Cellar extends Card {
 
     @Override
     public Card makeCopy() {
-        return null;
+        return new Cellar();
     }
 }

@@ -17,6 +17,6 @@ public class Silver extends Card {
 
     @Override
     public Card makeCopy() {
-        return null;
+        return new Silver();
     }
 }

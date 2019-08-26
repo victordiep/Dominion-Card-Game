@@ -17,6 +17,6 @@ public class Smithy extends Card {
 
     @Override
     public Card makeCopy() {
-        return null;
+        return new Smithy();
     }
 }

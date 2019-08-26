@@ -14,6 +14,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /*
  * - The server then sends the interaction made to all other clients who will then perform the action on their local
@@ -78,6 +79,7 @@ public class Client implements Runnable {
 
                     synchronized(isProcessingLock){
                         while(isProcessing){
+                            TimeUnit.SECONDS.sleep(1);
                             try {
                                 isProcessingLock.wait();
                             } catch (InterruptedException e) {
@@ -87,9 +89,13 @@ public class Client implements Runnable {
                         isProcessing = true;
                     }
 
+                    TimeUnit.SECONDS.sleep(1);
+
                     process(message);
                 }
                 catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
@@ -181,8 +187,9 @@ public class Client implements Runnable {
         else if (messageType == Packet.Type.SELECT_TURN) {
             Platform.runLater(() -> gamePane.updatePlayerTurn(message.getMessage(0)));
         }
-        else if (messageType == Packet.Type.SELECT_TURN) {
-            Platform.runLater(() -> gamePane.updatePlayerTurn(message.getMessage(0)));
+        else if (messageType == Packet.Type.BUY_CARD) {
+            if (!message.getUUID().equals(playerId.toString()))
+                Platform.runLater(() -> gamePane.updateSupply(message.getMessage(0)));
         }
 
         finish();

@@ -17,6 +17,6 @@ public class Province extends Card {
 
     @Override
     public Card makeCopy() {
-        return null;
+        return new Province();
     }
 }

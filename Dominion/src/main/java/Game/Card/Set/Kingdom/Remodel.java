@@ -17,6 +17,6 @@ public class Remodel extends Card {
 
     @Override
     public Card makeCopy() {
-        return null;
+        return new Remodel();
     }
 }

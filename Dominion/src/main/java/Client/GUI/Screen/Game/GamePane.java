@@ -25,9 +25,7 @@ import javafx.scene.text.Text;
 import protobuf.PacketProtos.Packet;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class GamePane extends BorderPane implements SceneState {
 
@@ -39,12 +37,16 @@ public class GamePane extends BorderPane implements SceneState {
     private HBox kingdomCardDisplay;
     private VBox basicCardDisplay;
 
-    private GameDetails turnDetails;
+    private GameDetails gameDetails;
     private Log log;
     private TrashPile trash;
     private HandDisplay handDisplay;
     private DeckDisplay deckDisplay;
     private DiscardDisplay discardDisplay;
+
+    private Set<PurchaseableCard> supply;
+
+    private TabPane tabs;
 
     EventHandler<MouseEvent> handler = MouseEvent::consume;
 
@@ -90,42 +92,26 @@ public class GamePane extends BorderPane implements SceneState {
     private VBox createBasicCards() {
         VBox basicCards = new VBox();
 
-        HBox treasureCards = new HBox();
-        for (String name : TREASURE_CARDS) {
-            PurchaseableCard purchaseableCard = new PurchaseableCard(name, game.getStock(name), GAME_CARD_WIDTH, GAME_CARD_HEIGHT);
-
-            purchaseableCard.setOnMouseEntered(e -> {
-                setCardArt(purchaseableCard.getCardArt());
-            });
-
-            treasureCards.getChildren().add(purchaseableCard);
-        }
-
-        HBox victoryCards = new HBox();
-        for (String name : VICTORY_CARDS) {
-            PurchaseableCard purchaseableCard = new PurchaseableCard(name, game.getStock(name), GAME_CARD_WIDTH, GAME_CARD_HEIGHT);
-
-            purchaseableCard.setOnMouseEntered(e -> {
-                setCardArt(purchaseableCard.getCardArt());
-            });
-
-            victoryCards.getChildren().add(purchaseableCard);
-        }
-
-        HBox curseCards = new HBox();
-        for (String name : CURSE_CARDS) {
-            PurchaseableCard purchaseableCard = new PurchaseableCard(name, game.getStock(name), GAME_CARD_WIDTH, GAME_CARD_HEIGHT);
-
-            purchaseableCard.setOnMouseEntered(e -> {
-                setCardArt(purchaseableCard.getCardArt());
-            });
-
-            curseCards.getChildren().add(purchaseableCard);
-        }
-
-        basicCards.getChildren().addAll(treasureCards, victoryCards, curseCards);
+        basicCards.getChildren().addAll(setUpPurchasableCard(TREASURE_CARDS), setUpPurchasableCard(VICTORY_CARDS), setUpPurchasableCard(CURSE_CARDS));
 
         return basicCards;
+    }
+
+    private HBox setUpPurchasableCard(Set<String> cards) {
+        HBox purchasableCards = new HBox();
+
+        for (String name : cards) {
+            PurchaseableCard purchaseableCard = new PurchaseableCard(name, game.getStock(name), GAME_CARD_WIDTH, GAME_CARD_HEIGHT);
+
+            purchaseableCard.setOnMouseEntered(e -> {
+                setCardArt(purchaseableCard.getCardArt());
+            });
+
+            supply.add(purchaseableCard);
+            purchasableCards.getChildren().add(purchaseableCard);
+        }
+
+        return purchasableCards;
     }
 
     private HBox createDeckAndDiscard() {
@@ -157,7 +143,6 @@ public class GamePane extends BorderPane implements SceneState {
 
         VBox kingdomCards = createKingdomCards();
 
-
         Image cardImage = new Image("/CardArts/CardBack/Card_Back.png");
         ImageView hoveredCard = new ImageView(cardImage);
         hoveredCard.setSmooth(true);
@@ -168,7 +153,7 @@ public class GamePane extends BorderPane implements SceneState {
         kingdomCardDisplay.getChildren().addAll(kingdomCards, hoveredCard);
 
         // Turn Information
-        turnDetails = new GameDetails(this);
+        gameDetails = new GameDetails(this);
 
         // HandDisplay
         handDisplay = new HandDisplay();
@@ -176,7 +161,7 @@ public class GamePane extends BorderPane implements SceneState {
 
         makeHandInteractable();
 
-        centerPane.getChildren().addAll(playerTags, kingdomCardDisplay, turnDetails, handDisplay);
+        centerPane.getChildren().addAll(playerTags, kingdomCardDisplay, gameDetails, handDisplay);
     }
 
     private HBox createPlayerTags() {
@@ -219,6 +204,7 @@ public class GamePane extends BorderPane implements SceneState {
                 String name = kingdomCards.get(cardIndex++);
                 PurchaseableCard purchaseableCard = new PurchaseableCard(name, game.getStock(name), GAME_CARD_WIDTH, GAME_CARD_HEIGHT);
                 cardRow.getChildren().add(purchaseableCard);
+                supply.add(purchaseableCard);
 
                 purchaseableCard.setOnMouseEntered(e -> {
                     setCardArt(purchaseableCard.getCardArt());
@@ -273,7 +259,8 @@ public class GamePane extends BorderPane implements SceneState {
     public void setup() {
         getChildren().addAll(new Background());
 
-        this.kingdomCards = new ArrayList<>(game.getKingdomCards());
+        kingdomCards = new ArrayList<>(game.getKingdomCards());
+        supply = new HashSet<>();
 
         VBox leftPane = new VBox();
         setupLeft(leftPane);
@@ -281,11 +268,11 @@ public class GamePane extends BorderPane implements SceneState {
         VBox centerPane = new VBox();
         setupCenter(centerPane);
 
-        TabPane rightPane = new TabPane();
-        setupRight(rightPane);
+        tabs = new TabPane();
+        setupRight(tabs);
 
         setLeft(leftPane);
-        setRight(rightPane);
+        setRight(tabs);
         setCenter(centerPane);
     }
 
@@ -297,14 +284,15 @@ public class GamePane extends BorderPane implements SceneState {
             log.addEvent("It's " + game.getNameByPlayerId(UUID.fromString(id)) + "'s turn");
 
             addEventFilter(MouseEvent.MOUSE_PRESSED, handler);
+            tabs.getSelectionModel().select(0);
         }
     }
 
     public void setActiveTurn() {
         Game.switchToActionPhase();
         log.addEvent("It's your turn!");
-        turnDetails.setStatusDetails("Action Phase");
-        turnDetails.enableAction();
+        gameDetails.setStatusDetails("Action Phase");
+        gameDetails.enableAction();
 
         removeEventFilter(MouseEvent.MOUSE_PRESSED, handler);
     }
@@ -319,7 +307,22 @@ public class GamePane extends BorderPane implements SceneState {
                                                     .build());
 
         handDisplay.updateCards(game.getHandAsString());
+        makeHandInteractable();
         deckDisplay.updateCardCount();
-        discardDisplay.updateCardCount();
+        DiscardDisplay.updateCardCount();
+        GameDetails.updateActions();
+        GameDetails.updateBuys();
+        GameDetails.updateCoins();
+    }
+
+    public void updateSupply(String name) {
+        game.takeCard(name);
+
+        for (PurchaseableCard cardPile : supply) {
+            if (cardPile.getCardName().equals(name)) {
+                cardPile.updateStock();
+                log.addAction("BUY", name + " has been purchased.");
+            }
+        }
     }
 }

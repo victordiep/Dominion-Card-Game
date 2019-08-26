@@ -18,9 +18,9 @@ public class GameDetails extends StackPane {
     private HBox turnDetails;
     private HBox currentStatus;
 
-    private Text action;
-    private Text buy;
-    private Text coins;
+    private static Text action;
+    private static Text buy;
+    private static Text coins;
 
     private Text status;
 
@@ -125,17 +125,15 @@ public class GameDetails extends StackPane {
         return buttons;
     }
 
-    public void updateActions() {
+    public static void updateActions() {
         action.setText(DominionManager.getInstance().getGame().getPlayerActions() + " Action");
     }
 
-    public void updateBuys() {
+    public static void updateBuys() {
         buy.setText(DominionManager.getInstance().getGame().getPlayerBuys() + " Buy");
     }
 
-    public void updateCoins() {
-        coins.setText(DominionManager.getInstance().getGame().getPlayerCoins() + " Coin");
-    }
+    public static void updateCoins() { coins.setText(DominionManager.getInstance().getGame().getPlayerCoins() + " Coin"); }
 
     public void setStatusDetails(String statusDetails) {
         status.setText(statusDetails);

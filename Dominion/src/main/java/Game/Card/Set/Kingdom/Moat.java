@@ -17,6 +17,6 @@ public class Moat extends Card {
 
     @Override
     public Card makeCopy() {
-        return null;
+        return new Moat();
     }
 }

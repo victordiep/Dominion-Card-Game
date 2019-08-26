@@ -17,6 +17,6 @@ public class Duchy extends Card {
 
     @Override
     public Card makeCopy() {
-        return null;
+        return new Duchy();
     }
 }

@@ -17,6 +17,6 @@ public class Market extends Card {
 
     @Override
     public Card makeCopy() {
-        return null;
+        return new Market();
     }
 }

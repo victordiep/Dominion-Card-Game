@@ -17,6 +17,6 @@ public class Mine extends Card {
 
     @Override
     public Card makeCopy() {
-        return null;
+        return new Mine();
     }
 }

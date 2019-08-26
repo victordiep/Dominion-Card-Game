@@ -17,6 +17,6 @@ public class Workshop extends Card {
 
     @Override
     public Card makeCopy() {
-        return null;
+        return new Workshop();
     }
 }

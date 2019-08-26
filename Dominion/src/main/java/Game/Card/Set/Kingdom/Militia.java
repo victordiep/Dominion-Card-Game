@@ -17,6 +17,6 @@ public class Militia extends Card {
 
     @Override
     public Card makeCopy() {
-        return null;
+        return new Militia();
     }
 }

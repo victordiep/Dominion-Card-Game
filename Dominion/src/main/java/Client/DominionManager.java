@@ -167,10 +167,6 @@ public class DominionManager extends Application {
         return game;
     }
 
-    public void processEvent() {
-        //client.process()
-    }
-
     public void sendEvent(Packet message) throws IOException {
         client.send(message);
     }

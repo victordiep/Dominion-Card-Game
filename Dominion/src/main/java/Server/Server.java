@@ -119,6 +119,9 @@ public class Server implements Runnable {
         }
     }
 
+    /*
+     * Typically relays messages received by clients and broadcasts it to everyone else
+     */
     public void process(Packet message) throws IOException {
         synchronized (isProcessingLock) {
             isProcessing = true;
@@ -131,6 +134,13 @@ public class Server implements Runnable {
                     .setUUID("SERVER")
                     .setType(Packet.Type.SELECT_TURN)
                     .addMessage(lobby.getCurrentPlayerTurn().toString())
+                    .build());
+        }
+        else if (messageType == Packet.Type.BUY_CARD) {
+            broadcast(Packet.newBuilder()
+                    .setUUID(message.getUUID())
+                    .setType(Packet.Type.BUY_CARD)
+                    .addMessage(message.getMessage(0))
                     .build());
         }
 

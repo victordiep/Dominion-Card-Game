@@ -34,4 +34,9 @@ public class CardArt extends ImageView {
     public String getName() {
         return name;
     }
+
+    public void disable() {
+        setOpacity(0.3);
+        setDisable(true);
+    }
 }

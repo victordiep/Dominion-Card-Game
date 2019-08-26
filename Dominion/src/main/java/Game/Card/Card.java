@@ -30,7 +30,7 @@ public abstract class Card {
     }
 
     public String getName() { return name; }
-    public int getCoste() { return cost; }
+    public int getCost() { return cost; }
     public Set<CardType> getType() { return types; }
 
     public void addType(CardType type) {

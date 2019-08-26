@@ -74,6 +74,9 @@ public class CardSelectPane extends BorderPane implements SceneState {
                 CardArt card = new CardArt(cards.get(cardIndex), CARD_WIDTH, CARD_HEIGHT);
                 setMouseEffects(card);
 
+                if (!PRESET_FIRST_GAME.contains(cards.get(cardIndex)))
+                    card.disable();
+
                 availableCards.put(cards.get(cardIndex++), card);
 
                 displayRow.getChildren().add(card);
@@ -168,15 +171,19 @@ public class CardSelectPane extends BorderPane implements SceneState {
         grid.add(btnPresetFirstGame, 0, 1);
 
         Button btnPresetSizeDistortion = createPresetButton("Size Distortion", PRESET_SIZE_DISTORTION);
+        btnPresetSizeDistortion.setDisable(true);
         grid.add(btnPresetSizeDistortion, 1, 1);
 
         Button btnPresetDeckTop = createPresetButton("Deck Top", PRESET_DECK_TOP);
+        btnPresetDeckTop.setDisable(true);
         grid.add(btnPresetDeckTop, 2, 1);
 
         Button btnPresetImprovements = createPresetButton("Improvements", PRESET_IMPROVEMENTS);
+        btnPresetImprovements.setDisable(true);
         grid.add(btnPresetImprovements, 0, 2);
 
         Button btnPresetSilverAndGold = createPresetButton("Big Money", PRESET_SILVER_AND_GOLD);
+        btnPresetSilverAndGold.setDisable(true);
         grid.add(btnPresetSilverAndGold, 1, 2);
 
         Button btnReset = new Button("Reset");

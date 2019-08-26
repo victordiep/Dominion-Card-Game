@@ -1,13 +1,17 @@
 package Game;
 
+import static Constant.CardSettings.DominionCards.CARD_COSTS;
 import static Constant.GuiSettings.GameSettings.*;
 
+import Client.DominionManager;
 import Constant.TurnPhase;
 import Game.Card.Card;
 import Game.Card.CardFactory;
 import Game.Card.SupplyPile;
 import Game.Player.Player;
+import protobuf.PacketProtos;
 
+import java.io.IOException;
 import java.util.*;
 
 
@@ -174,7 +178,20 @@ public class Game {
     public int getPlayerBuys() { return player.getBuys(); }
     public int getPlayerCoins() { return player.getCoins(); }
 
-    public boolean purchaseCard(String name) {
+    public boolean purchaseCard(String name) throws IOException {
+        if (getTurnPhase() == TurnPhase.BUY) {
+            if (supply.get(name).getStock() > 0 && getPlayerCoins() >= CARD_COSTS.get(name) && getPlayerBuys() > 0) {
+                player.buyCard(supply.get(name).take());
+
+                DominionManager.getInstance().sendEvent(PacketProtos.Packet.newBuilder()
+                                                            .setUUID(DominionManager.getInstance().getGame().getPlayerId().toString())
+                                                            .setType(PacketProtos.Packet.Type.BUY_CARD)
+                                                            .addMessage(name)
+                                                            .build());
+                return true;
+            }
+        }
+
         return false;
     }
 

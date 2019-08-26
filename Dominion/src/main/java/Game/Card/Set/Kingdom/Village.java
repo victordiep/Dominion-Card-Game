@@ -17,6 +17,6 @@ public class Village extends Card {
 
     @Override
     public Card makeCopy() {
-        return null;
+        return new Village();
     }
 }

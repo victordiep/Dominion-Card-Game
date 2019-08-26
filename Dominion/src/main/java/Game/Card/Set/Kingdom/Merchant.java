@@ -17,6 +17,6 @@ public class Merchant extends Card {
 
     @Override
     public Card makeCopy() {
-        return null;
+        return new Merchant();
     }
 }
