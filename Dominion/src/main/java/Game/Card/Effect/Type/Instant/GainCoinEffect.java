@@ -8,7 +8,7 @@ public class GainCoinEffect extends InstantEffect {
     private int coins;
 
     public GainCoinEffect(int coins) {
-        super("Gain " + coins + " coins");
+        super("Gain " + coins + " coin(s)");
         this.coins = coins;
     }
 

@@ -117,17 +117,23 @@ public class Player {
         shuffleDiscardIntoDeck();
     }
 
-    public void drawCard() {
-        hand.add(deck.pop());
+    public Card drawCard() {
+        if (deck.size() == 0)
+            shuffleDiscardIntoDeck();
+
+        Card card = deck.pop();
+        hand.add(card);
+        return card;
     }
 
-    public void drawCards(int num) {
-        for (int i = 0; i < num; i++) {
-            if (deck.size() == 0)
-                shuffleDiscardIntoDeck();
+    public List<Card> drawCards(int num) {
+        List<Card> cards = new ArrayList<>();
 
-            drawCard();
+        for (int i = 0; i < num; i++) {
+            cards.add(drawCard());
         }
+
+        return cards;
     }
 
     public Card findCardInHand(String name) {

@@ -203,6 +203,10 @@ public class Game {
         return supply.get(name).take();
     }
 
+    public List<Card> drawCard(int num) {
+        return player.drawCards(num);
+    }
+
     public boolean playCard(String name) {
         return player.playCard(name);
     }
