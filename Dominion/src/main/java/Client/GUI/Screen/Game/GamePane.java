@@ -10,6 +10,7 @@ import static Constant.GuiSettings.GameScreen.*;
 
 import Client.GUI.Screen.SceneState;
 import Constant.ActionInProgress;
+import Game.Card.Effect.Effect;
 import Game.Game;
 
 import com.google.protobuf.ProtocolStringList;
@@ -56,6 +57,8 @@ public class GamePane extends BorderPane implements SceneState {
     // Used to keep track of interactions for prompts
     private int count = 0;
     private int discardTo = 0;
+    private String specialCard = null;
+    private Effect specialEffect = null;
 
     public GamePane(Game game, List<String> playerNames) {
         this.game = game;
@@ -298,7 +301,7 @@ public class GamePane extends BorderPane implements SceneState {
 
     public void setActiveTurn() {
         Game.switchToActionPhase();
-        log.addEvent("It's your turn!");
+        logAddEvent("It's your turn!");
         gameDetails.setStatusDetails("Action Phase");
         gameDetails.enableAction();
 
@@ -319,6 +322,10 @@ public class GamePane extends BorderPane implements SceneState {
                                                     .build());
 
         updateDisplay();
+    }
+
+    public void checkIf() {
+        handDisplay.updateCards(game.getHandAsString());
     }
 
     public void updateHand() {
@@ -362,6 +369,12 @@ public class GamePane extends BorderPane implements SceneState {
             card.setOnMousePressed(e -> {
                 if (Game.getActionInProgress() == ActionInProgress.NO_ACTION) {
                     if (game.playCard(card.getName())) {
+                        if (card.getName().equals(specialCard) && specialEffect != null) {
+                            specialEffect.apply();
+                            resetSpecialCard();
+                            resetSpecialEffect();
+                        }
+
                         updateDisplay();
                     }
                 }
@@ -401,4 +414,10 @@ public class GamePane extends BorderPane implements SceneState {
 
     public void setDiscardTo(int num) { discardTo = num; }
     public void resetDiscardTo() { discardTo = 0; }
+
+    public void setSpecialCard(String card) { specialCard = card; }
+    public void resetSpecialCard() { specialCard = null; }
+
+    public void setSpecialEffect(Effect effect) { this.specialEffect = effect; }
+    public void resetSpecialEffect() { specialEffect = null; }
 }
