@@ -234,6 +234,26 @@ public class Client implements Runnable {
                 }
             }
         }
+        else if (messageType == Packet.Type.END_GAME) {
+            int totalVictoryPoints = DominionManager.getInstance().getGame().calculateVictoryPoints();
+
+            Platform.runLater(() -> gamePane.logAddEvent("You finished with " + totalVictoryPoints + " victory points"));
+
+            send(Packet.newBuilder().setUUID(playerId.toString())
+                                    .setType(Packet.Type.VICTORY_POINT_TOTAL)
+                                    .addMessage(Integer.toString(totalVictoryPoints))
+                                    .build());
+        }
+        else if (messageType == Packet.Type.WINNER) {
+            Platform.runLater(() -> gamePane.logAddEvent("The winner is "
+                                                            + playerList.get(UUID.fromString(message.getMessage(0)))
+                                                            + " with "
+                                                            + message.getAddon(0)
+                                                            + " victory points"));
+        }
+        else if (messageType == Packet.Type.DRAW) {
+            Platform.runLater(() -> gamePane.logAddEvent("All players ended with the same Victory Points. A draw!"));
+        }
 
         finish();
     }

@@ -316,16 +316,20 @@ public class GamePane extends BorderPane implements SceneState {
         game.endTurn();
         addEventFilter(MouseEvent.MOUSE_PRESSED, handler);
 
-        DominionManager.getInstance().sendEvent(Packet.newBuilder()
-                                                    .setUUID(game.getPlayerId().toString())
-                                                    .setType(Packet.Type.END_TURN)
-                                                    .build());
+        if (game.isGameOver()) {
+            DominionManager.getInstance().sendEvent(Packet.newBuilder()
+                    .setUUID(game.getPlayerId().toString())
+                    .setType(Packet.Type.END_GAME)
+                    .build());
+        }
+        else {
+            DominionManager.getInstance().sendEvent(Packet.newBuilder()
+                    .setUUID(game.getPlayerId().toString())
+                    .setType(Packet.Type.END_TURN)
+                    .build());
+        }
 
         updateDisplay();
-    }
-
-    public void checkIf() {
-        handDisplay.updateCards(game.getHandAsString());
     }
 
     public void updateHand() {

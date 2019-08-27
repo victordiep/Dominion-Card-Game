@@ -261,6 +261,10 @@ public class Game {
         }
     }
 
+    public int calculateVictoryPoints() {
+        return player.calculateVictoryPoints();
+    }
+
     /*
      * ACTION
      */

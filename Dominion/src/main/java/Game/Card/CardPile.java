@@ -17,8 +17,8 @@ public class CardPile {
         cards = new ArrayList<>();
     }
 
-    private List<Card> getCards() {
-        return cards;
+    public List<Card> getCards() {
+        return new ArrayList<>(cards);
     }
 
     public void push(Card card) {

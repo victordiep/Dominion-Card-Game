@@ -289,6 +289,18 @@ public final class PacketProtos {
        * <code>TRASH = 12;</code>
        */
       TRASH(12),
+      /**
+       * <code>VICTORY_POINT_TOTAL = 13;</code>
+       */
+      VICTORY_POINT_TOTAL(13),
+      /**
+       * <code>WINNER = 14;</code>
+       */
+      WINNER(14),
+      /**
+       * <code>DRAW = 15;</code>
+       */
+      DRAW(15),
       UNRECOGNIZED(-1),
       ;
 
@@ -344,6 +356,18 @@ public final class PacketProtos {
        * <code>TRASH = 12;</code>
        */
       public static final int TRASH_VALUE = 12;
+      /**
+       * <code>VICTORY_POINT_TOTAL = 13;</code>
+       */
+      public static final int VICTORY_POINT_TOTAL_VALUE = 13;
+      /**
+       * <code>WINNER = 14;</code>
+       */
+      public static final int WINNER_VALUE = 14;
+      /**
+       * <code>DRAW = 15;</code>
+       */
+      public static final int DRAW_VALUE = 15;
 
 
       public final int getNumber() {
@@ -377,6 +401,9 @@ public final class PacketProtos {
           case 10: return END_TURN;
           case 11: return END_GAME;
           case 12: return TRASH;
+          case 13: return VICTORY_POINT_TOTAL;
+          case 14: return WINNER;
+          case 15: return DRAW;
           default: return null;
         }
       }
@@ -1436,15 +1463,16 @@ public final class PacketProtos {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\rMessage.proto\022\010protobuf\"\241\002\n\006Packet\022\014\n\004" +
+      "\n\rMessage.proto\022\010protobuf\"\320\002\n\006Packet\022\014\n\004" +
       "UUID\030\001 \001(\t\022#\n\004type\030\002 \001(\0162\025.protobuf.Pack" +
       "et.Type\022\017\n\007message\030\003 \003(\t\022\r\n\005addon\030\004 \003(\t\"" +
-      "\303\001\n\004Type\022\016\n\nCONNECTION\020\000\022\t\n\005LOBBY\020\001\022\r\n\tC" +
+      "\362\001\n\004Type\022\016\n\nCONNECTION\020\000\022\t\n\005LOBBY\020\001\022\r\n\tC" +
       "ARD_LIST\020\002\022\016\n\nSTART_GAME\020\003\022\017\n\013SELECT_TUR" +
       "N\020\004\022\r\n\tPLAY_CARD\020\005\022\014\n\010BUY_CARD\020\006\022\r\n\tGAIN" +
       "_CARD\020\007\022\r\n\tDRAW_CARD\020\010\022\016\n\nSTART_TURN\020\t\022\014" +
-      "\n\010END_TURN\020\n\022\014\n\010END_GAME\020\013\022\t\n\005TRASH\020\014B\016B" +
-      "\014PacketProtosb\006proto3"
+      "\n\010END_TURN\020\n\022\014\n\010END_GAME\020\013\022\t\n\005TRASH\020\014\022\027\n" +
+      "\023VICTORY_POINT_TOTAL\020\r\022\n\n\006WINNER\020\016\022\010\n\004DR" +
+      "AW\020\017B\016B\014PacketProtosb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

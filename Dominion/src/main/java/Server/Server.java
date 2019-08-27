@@ -2,10 +2,7 @@ package Server;
 
 import java.io.IOException;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import Client.DominionManager;
@@ -33,6 +30,8 @@ public class Server implements Runnable {
 
     private List<Packet> packetQueue;
 
+    private Map<UUID, Integer> finalTally;
+
     public Server() {
         this.isRunningLock = new Object();
         this.inLobbyLock = new Object();
@@ -40,6 +39,7 @@ public class Server implements Runnable {
         this.isProcessingLock = new Object();
 
         this.packetQueue = new ArrayList<>();
+        this.finalTally = new HashMap<>();
     }
 
     public void initialize(ConnectionConfig config) throws IOException {
@@ -168,6 +168,42 @@ public class Server implements Runnable {
             }
 
             broadcast(playCardPacket.build());
+        }
+        else if (messageType == Packet.Type.END_GAME) {
+            broadcast(Packet.newBuilder()
+                    .setUUID("SERVER")
+                    .setType(Packet.Type.END_GAME)
+                    .build());
+        }
+        else if (messageType == Packet.Type.VICTORY_POINT_TOTAL) {
+            finalTally.put(UUID.fromString(message.getUUID()), Integer.parseInt(message.getMessage(0)));
+            if (finalTally.size() == lobby.getNumPlayersConnected()) {
+                Map.Entry<UUID, Integer> winner = null;
+
+                for (Map.Entry<UUID, Integer> player : finalTally.entrySet())
+                {
+                    if (winner == null || player.getValue().compareTo(winner.getValue()) > 0)
+                    {
+                        winner = player;
+                    }
+                }
+
+                Set<Integer> values = new HashSet<Integer>(finalTally.values());
+                if (values.size() == 1) {
+                    broadcast(Packet.newBuilder()
+                            .setUUID("SERVER")
+                            .setType(Packet.Type.DRAW)
+                            .build());
+                }
+                else {
+                    broadcast(Packet.newBuilder()
+                            .setUUID("SERVER")
+                            .setType(Packet.Type.WINNER)
+                            .addMessage(winner.getKey().toString())
+                            .addAddon(winner.getValue().toString())
+                            .build());
+                }
+            }
         }
 
         finish();

@@ -212,4 +212,23 @@ public class Player {
 
         return card;
     }
+
+    public int calculateVictoryPoints() {
+       int victoryPoints = 0;
+
+        shuffleAllIntoDeck();
+
+        for (Card card : deck.getCards()) {
+            if (card.getType().contains(CardType.VICTORY)) {
+                if (card.getName().equals("Estate"))
+                    victoryPoints = victoryPoints + 1;
+                else if (card.getName().equals("Duchy"))
+                    victoryPoints = victoryPoints + 3;
+                else if (card.getName().equals("Province"))
+                    victoryPoints = victoryPoints + 6;
+            }
+        }
+
+        return victoryPoints;
+    }
 }

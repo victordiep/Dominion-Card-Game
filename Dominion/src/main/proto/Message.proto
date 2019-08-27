@@ -24,6 +24,9 @@ message Packet {
         END_TURN = 10;
         END_GAME = 11;
         TRASH = 12;
+        VICTORY_POINT_TOTAL = 13;
+        WINNER = 14;
+        DRAW = 15;
     }
 
     Type type = 2;
