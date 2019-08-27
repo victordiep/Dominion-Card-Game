@@ -169,6 +169,19 @@ public class Player {
         return result;
     }
 
+    public boolean discard(String name) {
+        Card card = findCardInHand(name);
+
+        // Invalid card
+        if (card == null)
+            return false;
+
+        discard.push(card);
+        hand.remove(card);
+
+        return true;
+    }
+
     public void buyCard(Card card) {
         if (coins >= card.getCost()){
             spendCoins(card.getCost());

@@ -127,13 +127,12 @@ public class Game {
     public int getDiscardSize() {
         return player.getDiscardSize();
     }
+    public boolean discard(String name) { return player.discard(name); }
 
     /*
      * HAND
      */
-    public List<Card> drawCard(int num) {
-        return player.drawCards(num);
-    }
+    public List<Card> drawCard(int num) { return player.drawCards(num); }
     public boolean playCard(String name) { return player.playCard(name); }
 
     public final List<String> getHandAsString() {
@@ -199,7 +198,8 @@ public class Game {
     /*
      * ACTION IN PROGRESS
      */
-    public void setActionInProgress(ActionInProgress type) { actionType = type; }
+    public static ActionInProgress getActionInProgress() { return actionType; }
+    public static void setActionInProgress(ActionInProgress type) { actionType = type; }
 
     /*
      * BUY

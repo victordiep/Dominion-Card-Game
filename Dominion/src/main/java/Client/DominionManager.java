@@ -87,6 +87,10 @@ public class DominionManager extends Application {
         return instance;
     }
 
+    public Parent getContent() {
+        return scene.getRoot();
+    }
+
     public ConnectionConfig getConnectionConfig() {
         return connectionConfig;
     }

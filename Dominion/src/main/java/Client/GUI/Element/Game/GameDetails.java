@@ -2,6 +2,7 @@ package Client.GUI.Element.Game;
 
 import Client.DominionManager;
 import Client.GUI.Screen.Game.GamePane;
+import Constant.ActionInProgress;
 import Game.Game;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -113,12 +114,7 @@ public class GameDetails extends StackPane {
             endTurn.setDisable(true);
         });
 
-        endAction.setOnMousePressed(e -> {
-            setStatusDetails("Buy Phase");
-            Game.switchToBuyPhase();
-            endAction.setDisable(true);
-            endTurn.setDisable(false);
-        });
+        endAction();
 
         buttons.getChildren().addAll(endTurn, endAction);
 
@@ -141,5 +137,25 @@ public class GameDetails extends StackPane {
 
     public void enableAction() {
         endAction.setDisable(false);
+    }
+
+    public Button specialAction() {
+        endAction.setText("FINISH");
+        endAction.setStyle("-fx-text-fill: white; -fx-background: black; -fx-background-color: green");
+        return endAction;
+    }
+
+    public void endAction() {
+        endAction.setOnMousePressed(e -> {
+            if (Game.getActionInProgress() == ActionInProgress.NO_ACTION) {
+                setStatusDetails("Buy Phase");
+                Game.switchToBuyPhase();
+                endAction.setDisable(true);
+                endTurn.setDisable(false);
+            }
+            else if (Game.getActionInProgress() == ActionInProgress.DISCARD) {
+
+            }
+        });
     }
 }

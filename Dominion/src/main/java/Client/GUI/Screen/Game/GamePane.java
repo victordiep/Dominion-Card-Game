@@ -9,12 +9,14 @@ import static Constant.CardSettings.DominionCards.*;
 import static Constant.GuiSettings.GameScreen.*;
 
 import Client.GUI.Screen.SceneState;
+import Constant.ActionInProgress;
 import Game.Game;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -30,7 +32,7 @@ import java.util.*;
 
 public class GamePane extends BorderPane implements SceneState {
 
-    private Game game;
+    private static Game game;
 
     private List<String> kingdomCards;
     private List<String> playerNames;
@@ -50,6 +52,7 @@ public class GamePane extends BorderPane implements SceneState {
     private TabPane tabs;
 
     EventHandler<MouseEvent> handler = MouseEvent::consume;
+    private int count = 0;
 
     public GamePane(Game game, List<String> playerNames) {
         this.game = game;
@@ -244,21 +247,6 @@ public class GamePane extends BorderPane implements SceneState {
         kingdomCardDisplay.getChildren().set(1, card);
     }
 
-    private void makeHandInteractable() {
-        for (CardArt card: handDisplay.getCardArts()) {
-            card.setOnMouseEntered(e -> setCardArt(card));
-            card.setOnMousePressed(e -> {
-                if (game.playCard(card.getName())) {
-                    try {
-                        updateDisplay();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            });
-        }
-    }
-
     @Override
     public void setup() {
         getChildren().addAll(new Background());
@@ -313,8 +301,12 @@ public class GamePane extends BorderPane implements SceneState {
         updateDisplay();
     }
 
-    public void updateDisplay() throws IOException {
+    public void updateHand() {
         handDisplay.updateCards(game.getHandAsString());
+    }
+
+    public void updateDisplay() {
+        updateHand();
         makeHandInteractable();
         deckDisplay.updateCardCount();
         DiscardDisplay.updateCardCount();
@@ -322,7 +314,6 @@ public class GamePane extends BorderPane implements SceneState {
         GameDetails.updateBuys();
         GameDetails.updateCoins();
     }
-
 
     public void updateSupply(String name) {
         game.takeCard(name);
@@ -334,4 +325,30 @@ public class GamePane extends BorderPane implements SceneState {
             }
         }
     }
+
+    public Button specialAction() {
+        return gameDetails.specialAction();
+    }
+
+    public void makeHandInteractable() {
+        for (CardArt card: handDisplay.getCardArts()) {
+            card.setOnMouseEntered(e -> setCardArt(card));
+            card.setOnMousePressed(e -> {
+                if (Game.getActionInProgress() == ActionInProgress.NO_ACTION) {
+                    if (game.playCard(card.getName())) {
+                        updateDisplay();
+                    }
+                }
+                else if (Game.getActionInProgress() == ActionInProgress.DISCARD) {
+                    if (game.discard(card.getName())) {
+                        updateDisplay();
+                        count++;
+                    }
+                }
+            });
+        }
+    }
+
+    public int getCount() { return count; }
+    public void resetCount() { count = 0; }
 }

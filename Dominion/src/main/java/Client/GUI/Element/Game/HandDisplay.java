@@ -28,6 +28,7 @@ public class HandDisplay extends ScrollPane {
 
     public void updateCards(List<String> cardNames) {
         setContent(null);
+        cardArts.clear();
 
         int cardIndex  = 0;
         int numOfCards = cardNames.size();
