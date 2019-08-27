@@ -291,6 +291,10 @@ public class GamePane extends BorderPane implements SceneState {
         log.addEvent(event);
     }
 
+    public void logAddAction(String type, String event) {
+        log.addAction(type, event);
+    }
+
 
     public void setActiveTurn() {
         Game.switchToActionPhase();
