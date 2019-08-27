@@ -154,6 +154,21 @@ public class Server implements Runnable {
 
             broadcast(trashPacket.build());
         }
+        else if (messageType == Packet.Type.PLAY_CARD) {
+            Packet.Builder playCardPacket = Packet.newBuilder()
+                    .setUUID(message.getUUID())
+                    .setType(Packet.Type.PLAY_CARD);
+
+            for (String msg : message.getMessageList()) {
+                playCardPacket.addMessage(msg);
+            }
+
+            for (String addon : message.getAddonList()) {
+                playCardPacket.addAddon(addon);
+            }
+
+            broadcast(playCardPacket.build());
+        }
 
         finish();
     }

@@ -2,8 +2,12 @@ package Client;
 
 import Client.GUI.Element.Start.PlayerListMenu;
 import Client.GUI.Screen.Game.GamePane;
+import Constant.ActionInProgress;
+import Constant.TurnPhase;
+import Game.Game;
 import Server.ConnectionConfig;
 import javafx.application.Platform;
+import javafx.scene.control.Button;
 import protobuf.PacketProtos.Packet;
 
 import java.io.IOException;
@@ -88,8 +92,6 @@ public class Client implements Runnable {
                         }
                         isProcessing = true;
                     }
-
-                    TimeUnit.SECONDS.sleep(1);
 
                     process(message);
                 }
@@ -182,10 +184,12 @@ public class Client implements Runnable {
             setIfInLobby(false);
             setIfInGame(true);
             gamePane = new GamePane(DominionManager.getInstance().getGame(), new ArrayList<>(getPlayers().values()));
-            DominionManager.getInstance().switchToScreen(gamePane);
+            Platform.runLater(() -> DominionManager.getInstance().switchToScreen(gamePane));
         }
         else if (messageType == Packet.Type.SELECT_TURN) {
-            Platform.runLater(() -> gamePane.updatePlayerTurn(message.getMessage(0)));
+            Platform.runLater(() -> {
+                gamePane.updatePlayerTurn(message.getMessage(0));
+            } );
         }
         else if (messageType == Packet.Type.BUY_CARD) {
             if (!message.getUUID().equals(playerId.toString()))
@@ -195,7 +199,37 @@ public class Client implements Runnable {
             if (!message.getUUID().equals(playerId.toString()))
                 Platform.runLater(() -> gamePane.updateTrash(message.getMessageList()));
         }
+        else if (messageType == Packet.Type.PLAY_CARD) {
+            if (!message.getUUID().equals(playerId.toString())) {
+                if (message.getMessage(0).equals("Militia")) {
+                    Game.setActionInProgress(ActionInProgress.DISCARD);
+                    gamePane.setDiscardTo(Integer.parseInt(message.getAddon(0)));
 
+                    Platform.runLater(() -> {
+                        Button finish = gamePane.specialAction();
+                        finish.setDisable(true);
+
+                        gamePane.logAddEvent(playerList.get(UUID.fromString(message.getUUID())) + " played Militia. Discard to 3.");
+                        gamePane.allowClicks();
+
+                        finish.setOnAction(e -> {
+                            finish.setText("End Action");
+                            finish.setStyle("-fx-text-fill: black; -fx-background: black; -fx-background-color: turquoise");
+
+                            Game.setActionInProgress(ActionInProgress.NO_ACTION);
+                            gamePane.updateHand();
+                            gamePane.makeHandInteractable();
+                            gamePane.resetDiscardTo();
+
+                            if (Game.getTurnPhase() != TurnPhase.ACTION) {
+
+                            }
+                        });
+                    });
+
+                }
+            }
+        }
 
         finish();
     }

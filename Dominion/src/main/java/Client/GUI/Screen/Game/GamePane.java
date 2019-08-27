@@ -54,8 +54,8 @@ public class GamePane extends BorderPane implements SceneState {
     EventHandler<MouseEvent> handler = MouseEvent::consume;
 
     // Used to keep track of interactions for prompts
-    private String cardSelected = null;
     private int count = 0;
+    private int discardTo = 0;
 
     public GamePane(Game game, List<String> playerNames) {
         this.game = game;
@@ -276,12 +276,21 @@ public class GamePane extends BorderPane implements SceneState {
             setActiveTurn();
         }
         else {
-            log.addEvent("It's " + game.getNameByPlayerId(UUID.fromString(id)) + "'s turn");
+            logAddEvent("It's " + game.getNameByPlayerId(UUID.fromString(id)) + "'s turn");
 
-            addEventFilter(MouseEvent.MOUSE_PRESSED, handler);
+            removeClicks();
             tabs.getSelectionModel().select(0);
         }
     }
+
+    public void removeClicks() {
+        addEventFilter(MouseEvent.MOUSE_PRESSED, handler);
+    }
+
+    public void logAddEvent(String event) {
+        log.addEvent(event);
+    }
+
 
     public void setActiveTurn() {
         Game.switchToActionPhase();
@@ -289,6 +298,10 @@ public class GamePane extends BorderPane implements SceneState {
         gameDetails.setStatusDetails("Action Phase");
         gameDetails.enableAction();
 
+        allowClicks();
+    }
+
+    public void allowClicks() {
         removeEventFilter(MouseEvent.MOUSE_PRESSED, handler);
     }
 
@@ -349,9 +362,14 @@ public class GamePane extends BorderPane implements SceneState {
                     }
                 }
                 else if (Game.getActionInProgress() == ActionInProgress.DISCARD) {
-                    if (game.discard(card.getName())) {
+                    System.out.println(game.getHandAsString().size() + ":" + discardTo);
+                    if (game.getHandAsString().size() > discardTo && game.discard(card.getName())) {
                         updateDisplay();
                         count++;
+
+                        if (specialAction().isDisable() && game.getHandAsString().size() == discardTo) {
+                            specialAction().setDisable(false);
+                        }
                     }
                 }
                 else if (Game.getActionInProgress() == ActionInProgress.GAIN) {
@@ -377,7 +395,6 @@ public class GamePane extends BorderPane implements SceneState {
     public int getCount() { return count; }
     public void resetCount() { count = 0; }
 
-    public String getCardSelected() { return cardSelected; }
-    public void setCardSelected(String card) { cardSelected = card; }
-    public void resetCardSelected() { cardSelected = null; }
+    public void setDiscardTo(int num) { discardTo = num; }
+    public void resetDiscardTo() { discardTo = 0; }
 }

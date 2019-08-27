@@ -18,15 +18,16 @@ public class DiscardXToDrawXEffect extends InstantEffect {
         Game.setActionInProgress(ActionInProgress.DISCARD);
 
         GamePane pane = (GamePane) DominionManager.getInstance().getContent();
-        Button test = pane.specialAction();
-        test.setOnAction(e -> {
-            test.setText("End Action");
-            test.setStyle("-fx-text-fill: black; -fx-background: black; -fx-background-color: turquoise");
+        Button finish = pane.specialAction();
+        finish.setOnAction(e -> {
+            finish.setText("End Action");
+            finish.setStyle("-fx-text-fill: black; -fx-background: black; -fx-background-color: turquoise");
 
             DominionManager.getInstance().getGame().drawCard(pane.getCount());
             Game.setActionInProgress(ActionInProgress.NO_ACTION);
             pane.updateHand();
             pane.makeHandInteractable();
+            pane.resetCount();
         });
     }
 }
