@@ -315,6 +315,7 @@ public class GamePane extends BorderPane implements SceneState {
         GameDetails.updateActions();
         GameDetails.updateBuys();
         GameDetails.updateCoins();
+        trash.updateTrash();
     }
 
     public void updateSupply(String name) {
@@ -349,6 +350,15 @@ public class GamePane extends BorderPane implements SceneState {
                 }
                 else if (Game.getActionInProgress() == ActionInProgress.GAIN) {
                     // Do nothing
+                }
+                else if (Game.getActionInProgress() == ActionInProgress.TRASH) {
+                    if (game.getGainType() == null || game.getCard(card.getName()).getType().contains(game.getGainType())) {
+                        game.trashCardFromHand(card.getName());
+                        updateDisplay();
+
+                        Game.setActionInProgress(ActionInProgress.GAIN);
+                        game.setCostCap(game.getCostCap() + CARD_COSTS.get(card.getName()));
+                    }
                 }
             });
         }

@@ -95,6 +95,9 @@ public class PurchaseableCard extends StackPane {
                     DiscardDisplay.updateCardCount();
                     DiscardDisplay.updateArt();
 
+                    DominionManager.getInstance().getGame().setCostCap(99);
+                    DominionManager.getInstance().getGame().setGainType(null);
+
                     Game.setActionInProgress(ActionInProgress.NO_ACTION);
                 }
             } catch (IOException ex) {

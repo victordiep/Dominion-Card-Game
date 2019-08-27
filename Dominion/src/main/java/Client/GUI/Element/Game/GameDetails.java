@@ -153,9 +153,6 @@ public class GameDetails extends StackPane {
                 endAction.setDisable(true);
                 endTurn.setDisable(false);
             }
-            else if (Game.getActionInProgress() == ActionInProgress.DISCARD) {
-
-            }
         });
     }
 }

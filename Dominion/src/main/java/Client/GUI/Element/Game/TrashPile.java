@@ -1,8 +1,15 @@
 package Client.GUI.Element.Game;
 
+import Client.DominionManager;
+import Client.GUI.Element.Card.CardArt;
+import Game.Card.Card;
+import javafx.geometry.Insets;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.VBox;
+
+import static Constant.GuiSettings.GameScreen.GAME_CARD_HEIGHT;
+import static Constant.GuiSettings.GameScreen.GAME_CARD_WIDTH;
 
 public class TrashPile extends Tab {
 
@@ -21,6 +28,18 @@ public class TrashPile extends Tab {
 
     private void addTrash(ScrollPane scrollingTrash) {
         trash = new VBox();
+        trash.setPadding(new Insets(10,10,10,10));
 
+        updateTrash();
+
+        scrollingTrash.setContent(trash);
+    }
+
+    public void updateTrash() {
+        trash.getChildren().clear();
+
+        for (Card card : DominionManager.getInstance().getGame().getTrash()) {
+            trash.getChildren().add(new CardArt(card.getName(), GAME_CARD_WIDTH, GAME_CARD_HEIGHT));
+        }
     }
 }

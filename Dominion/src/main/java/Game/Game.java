@@ -5,6 +5,7 @@ import static Constant.GuiSettings.GameSettings.*;
 
 import Client.DominionManager;
 import Constant.ActionInProgress;
+import Constant.CardType;
 import Constant.TurnPhase;
 import Game.Card.Card;
 import Game.Card.CardFactory;
@@ -35,6 +36,7 @@ public class Game {
     private static ActionInProgress actionType = ActionInProgress.NO_ACTION;
 
     private int costCap = 99;
+    private CardType gainType = null;
 
     public Game(List<String> kingdomCards, UUID playerId, String name, Map<UUID, String> players) {
         player = new Player(playerId, name);
@@ -52,7 +54,11 @@ public class Game {
         setupGame();
     }
 
+    public int getCostCap() { return costCap; }
     public void setCostCap(int costCap) { this.costCap = costCap; }
+
+    public CardType getGainType() { return gainType; }
+    public void setGainType(CardType gainType) { this.gainType = gainType; }
 
     private void setupGame() {
         populateSupply(supply);
@@ -110,10 +116,28 @@ public class Game {
     public Card createCard(String name) {
         return cardFactory.createCard(name);
     }
+    public Card getCard(String name) {
+        return supply.get(name).getCard();
+    }
     public Card takeCard(String name) {
         return supply.get(name).take();
     }
     public List<String> getKingdomCards() { return kingdomCards; }
+
+    /*
+     * TRASH
+     */
+
+    public final List<Card> getTrash() { return trash; }
+    public void trashCardFromHand(String card) { trash.add(player.takeCardFromHand(card)); }
+    public Card removeTrash(String name) {
+        for (int i = 0; i < trash.size(); i++) {
+            if (trash.get(i).getName().equals(name))
+                return trash.remove(i);
+        }
+
+        return null;
+    }
 
     /*
      * DECK
@@ -137,14 +161,19 @@ public class Game {
         if (getActionInProgress() == ActionInProgress.GAIN) {
             if (supply.get(name).getStock() > 0) {
                 if (supply.get(name).getCard().getCost() <= costCap) {
-                    player.putCardIntoDiscard(supply.get(name).take());
+                    Card card = supply.get(name).getCard();
 
-                    DominionManager.getInstance().sendEvent(PacketProtos.Packet.newBuilder()
-                            .setUUID(DominionManager.getInstance().getGame().getPlayerId().toString())
-                            .setType(PacketProtos.Packet.Type.BUY_CARD)
-                            .addMessage(name)
-                            .build());
-                    return true;
+                    if (gainType == null || card.getType().contains(gainType)) {
+                        player.putCardIntoDiscard(supply.get(name).take());
+
+                        DominionManager.getInstance().sendEvent(PacketProtos.Packet.newBuilder()
+                                .setUUID(DominionManager.getInstance().getGame().getPlayerId().toString())
+                                .setType(PacketProtos.Packet.Type.BUY_CARD)
+                                .addMessage(name)
+                                .build());
+
+                        return true;
+                    }
                 }
             }
         }

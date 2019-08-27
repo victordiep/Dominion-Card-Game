@@ -200,4 +200,16 @@ public class Player {
         buys = NUMBER_OF_BUYS;
         coins = NUMBER_OF_COINS;
     }
+
+    public Card takeCardFromHand(String name) {
+        Card card = findCardInHand(name);
+
+        // Invalid card
+        if (card == null)
+            return card;
+
+        hand.remove(card);
+
+        return card;
+    }
 }
