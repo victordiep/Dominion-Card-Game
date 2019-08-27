@@ -34,6 +34,8 @@ public class Game {
     private static TurnPhase turnPhase = TurnPhase.INACTIVE;
     private static ActionInProgress actionType = ActionInProgress.NO_ACTION;
 
+    private int costCap = 99;
+
     public Game(List<String> kingdomCards, UUID playerId, String name, Map<UUID, String> players) {
         player = new Player(playerId, name);
         this.playerNames = new HashMap<>(players);
@@ -49,6 +51,8 @@ public class Game {
 
         setupGame();
     }
+
+    public void setCostCap(int costCap) { this.costCap = costCap; }
 
     private void setupGame() {
         populateSupply(supply);
@@ -128,6 +132,25 @@ public class Game {
         return player.getDiscardSize();
     }
     public boolean discard(String name) { return player.discard(name); }
+
+    public boolean putCardInDiscard(String name) throws IOException {
+        if (getActionInProgress() == ActionInProgress.GAIN) {
+            if (supply.get(name).getStock() > 0) {
+                if (supply.get(name).getCard().getCost() <= costCap) {
+                    player.putCardIntoDiscard(supply.get(name).take());
+
+                    DominionManager.getInstance().sendEvent(PacketProtos.Packet.newBuilder()
+                            .setUUID(DominionManager.getInstance().getGame().getPlayerId().toString())
+                            .setType(PacketProtos.Packet.Type.BUY_CARD)
+                            .addMessage(name)
+                            .build());
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 
     /*
      * HAND
@@ -219,6 +242,7 @@ public class Game {
                                                             .setType(PacketProtos.Packet.Type.BUY_CARD)
                                                             .addMessage(name)
                                                             .build());
+                costCap = 99;
                 return true;
             }
         }

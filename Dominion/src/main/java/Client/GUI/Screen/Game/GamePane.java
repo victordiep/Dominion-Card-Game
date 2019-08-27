@@ -15,7 +15,6 @@ import Game.Game;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
@@ -52,6 +51,9 @@ public class GamePane extends BorderPane implements SceneState {
     private TabPane tabs;
 
     EventHandler<MouseEvent> handler = MouseEvent::consume;
+
+    // Used to keep track of interactions for prompts
+    private String cardSelected = null;
     private int count = 0;
 
     public GamePane(Game game, List<String> playerNames) {
@@ -345,10 +347,17 @@ public class GamePane extends BorderPane implements SceneState {
                         count++;
                     }
                 }
+                else if (Game.getActionInProgress() == ActionInProgress.GAIN) {
+                    // Do nothing
+                }
             });
         }
     }
 
     public int getCount() { return count; }
     public void resetCount() { count = 0; }
+
+    public String getCardSelected() { return cardSelected; }
+    public void setCardSelected(String card) { cardSelected = card; }
+    public void resetCardSelected() { cardSelected = null; }
 }

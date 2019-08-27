@@ -2,6 +2,8 @@ package Client.GUI.Element.Game;
 
 import Client.DominionManager;
 import Client.GUI.Element.Card.CardArt;
+import Client.GUI.Screen.Game.GamePane;
+import Constant.ActionInProgress;
 import Constant.TurnPhase;
 import Game.Game;
 
@@ -78,13 +80,26 @@ public class PurchaseableCard extends StackPane {
 
     public void PurchaseCard() throws IOException {
         if (Game.getTurnPhase() == TurnPhase.BUY) {
-
             DominionManager.getInstance().getGame().purchaseCard(cardName);
             updateStock();
             DiscardDisplay.updateCardCount();
             DiscardDisplay.updateArt();
             GameDetails.updateBuys();
             GameDetails.updateCoins();
+        }
+
+        if (Game.getActionInProgress() == ActionInProgress.GAIN) {
+            try {
+                if (DominionManager.getInstance().getGame().putCardInDiscard(getCardName())) {
+                    updateStock();
+                    DiscardDisplay.updateCardCount();
+                    DiscardDisplay.updateArt();
+
+                    Game.setActionInProgress(ActionInProgress.NO_ACTION);
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 }
