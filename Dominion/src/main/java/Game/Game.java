@@ -129,7 +129,27 @@ public class Game {
      */
 
     public final List<Card> getTrash() { return trash; }
-    public void trashCardFromHand(String card) { trash.add(player.takeCardFromHand(card)); }
+    public void trashCardFromHand(String card) throws IOException {
+        trash.add(player.takeCardFromHand(card));
+
+        PacketProtos.Packet.Builder trashBuilder = PacketProtos.Packet.newBuilder()
+                                                        .setUUID(DominionManager.getInstance().getGame().getPlayerId().toString())
+                                                        .setType(PacketProtos.Packet.Type.TRASH);
+        for (Card trashedCard : trash) {
+            trashBuilder.addMessage(trashedCard.getName());
+        }
+
+        DominionManager.getInstance().sendEvent(trashBuilder.build());
+    }
+
+    public void setTrash(ArrayList<String> trashList) {
+        trash.clear();
+
+        for (String trashedCard : trashList) {
+            trash.add(createCard(trashedCard));
+        }
+    }
+
     public Card removeTrash(String name) {
         for (int i = 0; i < trash.size(); i++) {
             if (trash.get(i).getName().equals(name))

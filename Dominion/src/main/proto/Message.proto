@@ -23,7 +23,7 @@ message Packet {
         START_TURN = 9;
         END_TURN = 10;
         END_GAME = 11;
-        TEST = 12;
+        TRASH = 12;
     }
 
     Type type = 2;

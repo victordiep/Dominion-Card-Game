@@ -12,6 +12,7 @@ import Client.GUI.Screen.SceneState;
 import Constant.ActionInProgress;
 import Game.Game;
 
+import com.google.protobuf.ProtocolStringList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -329,6 +330,11 @@ public class GamePane extends BorderPane implements SceneState {
         }
     }
 
+    public void updateTrash(ProtocolStringList messageList) {
+        game.setTrash(new ArrayList<>(messageList));
+        trash.updateTrash();
+    }
+
     public Button specialAction() {
         return gameDetails.specialAction();
     }
@@ -353,11 +359,15 @@ public class GamePane extends BorderPane implements SceneState {
                 }
                 else if (Game.getActionInProgress() == ActionInProgress.TRASH) {
                     if (game.getGainType() == null || game.getCard(card.getName()).getType().contains(game.getGainType())) {
-                        game.trashCardFromHand(card.getName());
-                        updateDisplay();
+                        try {
+                            game.trashCardFromHand(card.getName());
+                            updateDisplay();
 
-                        Game.setActionInProgress(ActionInProgress.GAIN);
-                        game.setCostCap(game.getCostCap() + CARD_COSTS.get(card.getName()));
+                            Game.setActionInProgress(ActionInProgress.GAIN);
+                            game.setCostCap(game.getCostCap() + CARD_COSTS.get(card.getName()));
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
                     }
                 }
             });

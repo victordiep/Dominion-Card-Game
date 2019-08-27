@@ -191,6 +191,11 @@ public class Client implements Runnable {
             if (!message.getUUID().equals(playerId.toString()))
                 Platform.runLater(() -> gamePane.updateSupply(message.getMessage(0)));
         }
+        else if (messageType == Packet.Type.TRASH) {
+            if (!message.getUUID().equals(playerId.toString()))
+                Platform.runLater(() -> gamePane.updateTrash(message.getMessageList()));
+        }
+
 
         finish();
     }

@@ -143,6 +143,17 @@ public class Server implements Runnable {
                     .addMessage(message.getMessage(0))
                     .build());
         }
+        else if (messageType == Packet.Type.TRASH) {
+            Packet.Builder trashPacket = Packet.newBuilder()
+                                            .setUUID(message.getUUID())
+                                            .setType(Packet.Type.TRASH);
+
+            for (String trashedCard : message.getMessageList()) {
+                trashPacket.addMessage(trashedCard);
+            }
+
+            broadcast(trashPacket.build());
+        }
 
         finish();
     }
