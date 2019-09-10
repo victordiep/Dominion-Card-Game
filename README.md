@@ -1,6 +1,8 @@
 # Dominion (The Deck-Building Card Game)
-<span style="color:red">NOTE: This project is still a WIP</span>
-
+<span style="color:red">NOTE: This project is still a WIP. This project was more of a playground to try out things so it needs to be cleaned up.</span>
+- Lots of refactoring needs to be done
+- Tests need to be added
+- Comments need to be added where they are needed
 
 ## I. SETUP:
 
