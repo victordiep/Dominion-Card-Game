@@ -16,7 +16,7 @@
 
         <java.version>11</java.version>
 
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
         <jfx.version>11</jfx.version>
         <protobuf.version>3.16.1</protobuf.version>
 
